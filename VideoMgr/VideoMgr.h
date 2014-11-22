@@ -14,5 +14,10 @@ namespace VideoMgr {
 	public:
 		H264Writer( int width, int height, int bit_rate );
 		inline bool operator << ( cv::Mat& mat );
+
+	private:
+		int width;
+		int height;
+		int bit_rate;
 	};
 }

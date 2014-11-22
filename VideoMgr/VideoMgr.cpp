@@ -17,7 +17,13 @@ namespace VideoMgr
 
 	bool H264Writer::operator<<( cv::Mat& mat )
 	{
-		return false;
+		if (mat.rows != _height || mat.cols != _width)
+		{
+			//resize image
+			resize(mat, mat, Size(_width, _height));
+		}
+
+		
 	}
 
 }
