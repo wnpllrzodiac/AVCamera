@@ -27,7 +27,9 @@ namespace AutoCamera
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
-            H264Writer h264 = new H264Writer(800, 600, 441000);
+            H264Writer h264 = new H264Writer();
+            h264.create("d:\\test.mp4", 800, 600, 400000);
+            h264.close();
         }
     }
 }

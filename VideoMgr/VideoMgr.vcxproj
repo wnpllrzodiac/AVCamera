@@ -85,6 +85,7 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="VideoMgr.h" />
   </ItemGroup>
   <ItemGroup>

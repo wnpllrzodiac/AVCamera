@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "VideoMgr.h"
+#include "util.h"
 
 #include <opencv2\opencv.hpp>
 #include <opencv2\core\core.hpp>
@@ -20,74 +21,95 @@ extern "C"
 
 namespace VideoMgr
 {
-	H264Writer::H264Writer( int width, int height, int bit_rate )
-		: _width(width)
-		, _height(height)
-		, _bit_rate(bit_rate)
-		, _avcodec(nullptr)
-		, _avcontext(nullptr)
+	H264Writer::H264Writer()
 	{
+	}
 
-		_avcodec = avcodec_find_encoder(AV_CODEC_ID_H264);
-		if (!_avcodec) {
-			fprintf(stderr, "Codec not found\n");
-			exit(1);
+	bool H264Writer::create( String^ file, int width, int height, int bit_rate )
+	{
+		std::string filename;
+		String2string(file, filename);
+		AVOutputFormat* output_format = av_guess_format(nullptr, filename.c_str(), nullptr);
+		if(output_format == nullptr)
+		{
+			printf("could not deduce output format from outfile extension\n");
+			return false;
 		}
-		_avcontext = avcodec_alloc_context3(_avcodec);
-		if (!_avcontext) {
-			fprintf(stderr, "Could not allocate video codec context\n");
-			exit(1);
+
+		AVFormatContext* format_context = avformat_alloc_context();
+		if(format_context == nullptr)
+		{
+			printf("Memory error\n");
+			return false;
 		}
-		///* put sample parameters */
-		//_avcontext->bit_rate = 400000;
-		///* resolution must be a multiple of two */
-		//_avcontext->width = 352;
-		//_avcontext->height = 288;
-		///* frames per second */
-		//AVRational avRational;
-		//avRational.num = 1;
-		//avRational.den = 25;
-		//_avcontext->time_base = avRational;
-		//_avcontext->gop_size = 10;
-		//_avcontext->max_b_frames = 1;
-		//_avcontext->pix_fmt = AV_PIX_FMT_YUV420P;
+		format_context->oformat = output_format;
+		strcpy_s(format_context->filename, 1024, filename.c_str());
 
-		////av_opt_set(_avcontext->priv_data, "preset", "slow", 0);
-		//av_opt_set(_avcontext->priv_data, "preset", "superfast", 0);
-		//av_opt_set(_avcontext->priv_data, "tune", "zerolatency", 0);
+		// create video stream and video encoder
+		AVCodec* video_codec = avcodec_find_encoder(output_format->video_codec);
+		if (video_codec == nullptr)
+		{
+			printf("codec not found\n");
+			return false;
+		}
+		AVStream* video_stream = avformat_new_stream(format_context, video_codec);
+		if(video_stream == nullptr)
+		{
+			printf("could not alloc video stream\n");
+			return false;
+		}
+		avcodec_get_context_defaults3(video_stream->codec, video_codec);
 
-		///* open it */
-		//if (avcodec_open2(_avcontext, _avcodec, NULL) < 0) {
-		//	fprintf(stderr, "Could not open codec\n");
-		//	exit(1);
-		//}
-		//
-		//AVFrame* frame = av_frame_alloc();
-		//if (!frame) {
-		//	fprintf(stderr, "Could not allocate video frame\n");
-		//	exit(1);
-		//}
-		//frame->format = _avcontext->pix_fmt;
-		//frame->width = _avcontext->width;
-		//frame->height = _avcontext->height;
+		AVCodecContext* video_codec_context = video_stream->codec;
+		video_codec_context->codec_id       = AV_CODEC_ID_H264;
+		video_codec_context->pix_fmt        = AV_PIX_FMT_YUV420P;
+		video_codec_context->codec_type     = AVMEDIA_TYPE_VIDEO;
+		video_codec_context->bit_rate       = 1815484;
+		video_codec_context->width          = width;
+		video_codec_context->height         = height;
+		video_codec_context->time_base.num  = 1001;
+		video_codec_context->time_base.den  = 30000;
+		video_codec_context->gop_size       = 12;
+		video_codec_context->max_b_frames   = 0;
+		if (format_context->oformat->flags & AVFMT_GLOBALHEADER)
+			video_codec_context->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
-		//int got_output = 0;
-		//AVPacket pkt;
-		//int ret = avcodec_encode_video2(_avcontext, &pkt, frame, &got_output);
-		//if (ret < 0) {
-		//	fprintf(stderr, "Error encoding frame\n");
-		//	exit(1);
-		//}
-		//if (got_output) {
-		//	av_free_packet(&pkt);
-		//}
-		//
-		//avcodec_close(_avcontext);
-		//av_free(_avcontext);
-		//av_freep(&frame->data[0]);
-		//av_frame_free(&frame);
-		//printf("\n");
-		//
+		av_opt_set(video_codec_context->priv_data, "tune", "zerolatency", 0);
+		av_opt_set(video_codec_context->priv_data, "preset", "superfast", 0);
+
+		if(avcodec_open2(video_codec_context, video_codec, nullptr) < 0)
+		{
+			printf("can't open the output video codec\n");
+			return false;
+		}
+
+		format_context->video_codec_id = output_format->video_codec;
+
+		// open output file to write
+		if ((format_context->flags & AVFMT_NOFILE) == 0)
+		{
+			if(avio_open(&format_context->pb, filename.c_str(), AVIO_FLAG_READ_WRITE) < 0)
+			{
+				printf("can't open the output file : %s.", filename.c_str());
+				return false;
+			}
+		}
+
+		_video_pts = 0;
+
+		//return the result
+		_filename = file;
+		_width    = width;
+		_height   = height;
+
+		_format   = output_format;
+		_context  = format_context;
+		_vstream  = video_stream;
+		_vcodec   = video_codec_context;
+
+		write_header();
+
+		return true;
 	}
 
 	bool H264Writer::operator<<( cv::Mat& mat )
@@ -100,5 +122,40 @@ namespace VideoMgr
 
 		return false;
 	}
-		
+
+	void H264Writer::close()
+	{
+		write_trailer();
+
+		//interior_ptr<AVFormatContext*> p = &(_context);
+		//avformat_close_input(_context);
+		_format  = nullptr;
+		_vstream = nullptr;
+		_vcodec  = nullptr;
+	}
+
+	bool H264Writer::write_header()
+	{
+		int error = avformat_write_header(_context, NULL);
+		if (error < 0)
+		{
+			printf("Could not write output file header.");
+			return false;
+		}
+		return true;
+	}
+
+	bool H264Writer::write_trailer()
+	{
+		int error = av_write_trailer(_context);
+		if (error < 0)
+		{
+			printf("Could not write output file trailer.");
+			return false;
+		}
+		return true;
+	}
+
+	
+
 }

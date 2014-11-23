@@ -21,12 +21,12 @@
 #pragma comment (lib, "opencv_imgproc249.lib")
 #pragma comment (lib, "opencv_highgui249.lib")
 #pragma comment (lib, "opencv_objdetect249.lib")
-#pragma comment (lib, "opencv_video249.lib")
+//#pragma comment (lib, "opencv_video249.lib")
 #endif
 
 //ffmpeg library
 #pragma comment (lib, "avcodec.lib")
 #pragma comment (lib, "avformat.lib")
-//#pragma comment (lib, "avutil.lib")
+#pragma comment (lib, "avutil.lib")
 //#pragma comment (lib, "swscale.lib")
 //#pragma comment (lib, "swresample.lib")
