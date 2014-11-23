@@ -3,6 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Button Name="TestButton" Content="测试Function Button" Margin="164,149,181,93" Click="TestButton_Click" />
     </Grid>
 </Window>

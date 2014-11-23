@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VideoMgr;
 
 namespace AutoCamera
 {
@@ -22,6 +23,11 @@ namespace AutoCamera
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            H264Writer h264 = new H264Writer(800, 600, 441000);
         }
     }
 }
