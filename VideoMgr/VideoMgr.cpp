@@ -128,7 +128,8 @@ namespace VideoMgr
 		write_trailer();
 
 		//interior_ptr<AVFormatContext*> p = &(_context);
-		//avformat_close_input(_context);
+		pin_ptr<AVFormatContext*> pinptr =  (&_context);
+		avformat_close_input(pinptr);
 		_format  = nullptr;
 		_vstream = nullptr;
 		_vcodec  = nullptr;
