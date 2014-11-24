@@ -37,15 +37,19 @@ namespace AutoCamera
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            _camera_status = (CameraSatus)_camera.start();
             if(_camera_status == CameraSatus.CREATED)
             {
-                Task.Run( () =>
+                Task task = new Task(() =>
                 {
                     _camera.thread_task("d:\\test.mp4", 640, 480, 40000);
-                }
+                });
+                //task.Start();
+                _camera_status = (CameraSatus)_camera.start();
             }
-            
+            else if (_camera_status == CameraSatus.PAUSED)
+            {
+                _camera_status = (CameraSatus)_camera.start();
+            }
         }
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {

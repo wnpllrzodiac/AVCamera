@@ -50,9 +50,8 @@ namespace VideoMgr
 	}
 
 
-	void Camera::start()
+	int Camera::start()
 	{
-		if(!_video->isOpened()) return 0;
 		if(_status == CREATED)
 		{
 			_status = RECORDING;
