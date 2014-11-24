@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Button Name="TestButton" Content="测试Function Button" Margin="164,149,181,93" Click="TestButton_Click" />
+        <Button Name="StartButton" Content="Start" Margin="162,65,183,177" Click="StartButton_Click" />
+        <Button Name="PauseButton" Content="Pause" Margin="41,163,304,79" Click="PauseButton_Click" />
+        <Button Name="StopButton" Content="Stop" Margin="274,163,71,79" Click="StopButton_Click" />
     </Grid>
 </Window>

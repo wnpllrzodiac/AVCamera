@@ -9,6 +9,7 @@ extern "C"
 {
 #include <libavcodec\avcodec.h>
 #include <libavformat\avformat.h>
+#include <libswscale\swscale.h>
 }
 
 using namespace System;
@@ -41,14 +42,9 @@ namespace VideoMgr {
 		AVStream*        _vstream;
 		AVCodecContext*  _vcodec;
 
+		SwsContext*      _rgb_scaler;
+
 		AVFrame*         _output_video_frame;
 	};
 
-	public struct Init_ffmpeg
-	{
-		Init_ffmpeg()
-		{
-			av_register_all();
-		}
-	}_av_register_all;
 }

@@ -4,6 +4,11 @@
 
 #include "Stdafx.h"
 #include <vcclr.h>
+extern "C"
+{
+#include <libavcodec\avcodec.h>
+#include <libavformat\avformat.h>
+}
 
 namespace VideoMgr
 {
@@ -26,5 +31,9 @@ namespace VideoMgr
 		Marshal::FreeHGlobal(IntPtr((void*)chars));
 	}
 
+	static void ffmpeg_init_all()
+	{
+		av_register_all();
+	}
 }
 #endif

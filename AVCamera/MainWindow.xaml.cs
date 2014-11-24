@@ -18,18 +18,35 @@ namespace AutoCamera
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
+    /// 
+    public enum CameraSatus
+    {
+        CREATED   = 0,
+        RECORDING = 1,
+        PAUSED    = 2,
+        STOPPED   = 4,
+    };
     public partial class MainWindow : Window
     {
+        public CameraSatus _camera_status = CameraSatus.CREATED;
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            H264Writer h264 = new H264Writer();
-            h264.create("d:\\test.mp4", 800, 600, 400000);
-            h264.close();
+            _camera = new Camera("d:\\test.mp4");
         }
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _camera_status = (CameraSatus)_camera.pause();
+        }
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            _camera_status = (CameraSatus)_camera.stop();
+        }
+
+        private Camera _camera = null;
     }
 }

@@ -101,6 +101,8 @@ namespace VideoMgr
 		uint8_t* buffer=(uint8_t *)av_malloc(length * sizeof(uint8_t));
 		avpicture_fill((AVPicture*)_output_video_frame, buffer, AV_PIX_FMT_YUV420P, width, height);
 
+		_rgb_scaler = sws_getContext(width, height, AV_PIX_FMT_BGR24, width, height, AV_PIX_FMT_YUV420P, 0, nullptr, nullptr, nullptr);
+
 		//init pts
 		_video_pts = 0;
 
@@ -134,9 +136,12 @@ namespace VideoMgr
 			cv::resize(mat, mat, cv::Size(_width, _height));
 		}
 		//frame convert from BGR to YUV420
-		cvtColor(mat, mat, CV_BGR2YUV_I420);
+		//cvtColor(mat, mat, CV_BGR2YUV_I420);
+		uint8_t* data[] = { mat.data };
+		int src_linesize[] = { _width * 3 };
+		int h = sws_scale(_rgb_scaler, data, src_linesize, 0, _height, _output_video_frame->data, _output_video_frame->linesize);
 
-		memcpy( _output_video_frame->data, mat.data, mat.rows * mat.cols * mat.channels() );
+		//memcpy( _output_video_frame->data, mat.data, mat.rows * mat.cols * mat.channels() );
 		_output_video_frame->pts = _video_pts * _vcodec->time_base.num / _vcodec->time_base.den;
 		_output_video_frame->pict_type = AV_PICTURE_TYPE_S;
 		_output_video_frame->format = AV_PIX_FMT_YUV420P;
@@ -182,6 +187,7 @@ namespace VideoMgr
 		//interior_ptr<AVFormatContext*> p = &(_context);
 		pin_ptr<AVFormatContext*> AVFormatContextPtr =  (&_context);
 		avformat_close_input(AVFormatContextPtr);
+		sws_freeContext(_rgb_scaler);
 		pin_ptr<AVFrame*> AVFramePtr =  (&_output_video_frame);
 		av_frame_free(AVFramePtr);
 		_format  = nullptr;
