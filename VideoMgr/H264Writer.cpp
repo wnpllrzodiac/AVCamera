@@ -1,7 +1,7 @@
 // 这是主 DLL 文件。
 
 #include "stdafx.h"
-#include "VideoMgr.h"
+#include "H264Writer.h"
 #include "util.h"
 
 #include <opencv2\opencv.hpp>
@@ -95,6 +95,13 @@ namespace VideoMgr
 			}
 		}
 
+		//init output video frame
+		_output_video_frame = av_frame_alloc();
+		int length = avpicture_get_size(AV_PIX_FMT_YUV420P, width, height);
+		uint8_t* buffer=(uint8_t *)av_malloc(length * sizeof(uint8_t));
+		avpicture_fill((AVPicture*)_output_video_frame, buffer, AV_PIX_FMT_YUV420P, width, height);
+
+		//init pts
 		_video_pts = 0;
 
 		//return the result
@@ -114,13 +121,58 @@ namespace VideoMgr
 
 	bool H264Writer::operator<<( cv::Mat& mat )
 	{
+		write(mat, 33);
+
+		return true;
+	}
+
+	bool H264Writer::write( cv::Mat& mat, int64 duration )
+	{
 		if (mat.rows != _height || mat.cols != _width)
 		{
-			//resize image
+			//resize image width and height to frame size
 			cv::resize(mat, mat, cv::Size(_width, _height));
 		}
+		//frame convert from BGR to YUV420
+		cvtColor(mat, mat, CV_BGR2YUV_I420);
 
-		return false;
+		memcpy( _output_video_frame->data, mat.data, mat.rows * mat.cols * mat.channels() );
+		_output_video_frame->pts = _video_pts * _vcodec->time_base.num / _vcodec->time_base.den;
+		_output_video_frame->pict_type = AV_PICTURE_TYPE_S;
+		_output_video_frame->format = AV_PIX_FMT_YUV420P;
+		_output_video_frame->width = _width;
+		_output_video_frame->height = _height;
+
+		int frame_finished;
+		AVPacket output_packet = {0};
+		av_init_packet(&output_packet);
+		int ret = avcodec_encode_video2(_vcodec, &output_packet, _output_video_frame, &frame_finished);
+		if ( ret == 0 && frame_finished )
+		{
+			output_packet.stream_index = _vstream->index;
+			if (output_packet.pts != AV_NOPTS_VALUE)
+			{
+				output_packet.pts = av_rescale_q(output_packet.pts, _vcodec->time_base, _vstream->time_base);
+			}
+			if (output_packet.dts != AV_NOPTS_VALUE)
+			{
+				output_packet.dts = av_rescale_q(output_packet.dts, _vcodec->time_base, _vstream->time_base);
+			}
+			if(av_interleaved_write_frame(_context, &output_packet) < 0)
+			{
+				printf("Fail to write the video frame #%d.\n", _video_pts);
+				av_free_packet(&output_packet);
+				return false;
+			}
+		}
+		else
+		{
+			printf("avcodec_encode_video2 failed\n");
+		}
+		av_free_packet(&output_packet);
+		_video_pts += duration;
+
+		return true;
 	}
 
 	void H264Writer::close()
@@ -128,8 +180,10 @@ namespace VideoMgr
 		write_trailer();
 
 		//interior_ptr<AVFormatContext*> p = &(_context);
-		pin_ptr<AVFormatContext*> pinptr =  (&_context);
-		avformat_close_input(pinptr);
+		pin_ptr<AVFormatContext*> AVFormatContextPtr =  (&_context);
+		avformat_close_input(AVFormatContextPtr);
+		pin_ptr<AVFrame*> AVFramePtr =  (&_output_video_frame);
+		av_frame_free(AVFramePtr);
 		_format  = nullptr;
 		_vstream = nullptr;
 		_vcodec  = nullptr;
@@ -156,7 +210,6 @@ namespace VideoMgr
 		}
 		return true;
 	}
-
 	
 
 }

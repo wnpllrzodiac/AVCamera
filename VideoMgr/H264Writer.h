@@ -21,6 +21,7 @@ namespace VideoMgr {
 		H264Writer();
 		bool create( String^ file, int width, int height, int bit_rate );
 		inline bool operator << ( cv::Mat& mat );
+		inline bool write( cv::Mat& mat, int64 duration );
 		void close();
 
 	private:
@@ -33,12 +34,14 @@ namespace VideoMgr {
 		int              _height;
 		int              _bit_rate;
 
-		int              _video_pts;
+		int64            _video_pts;
 
 		AVFormatContext* _context;
 		AVOutputFormat*  _format;
 		AVStream*        _vstream;
 		AVCodecContext*  _vcodec;
+
+		AVFrame*         _output_video_frame;
 	};
 
 	public struct Init_ffmpeg
