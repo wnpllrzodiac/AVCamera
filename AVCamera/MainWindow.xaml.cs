@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading.Tasks;
 using VideoMgr;
 
 namespace AutoCamera
@@ -36,7 +37,15 @@ namespace AutoCamera
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            _camera = new Camera("d:\\test.mp4");
+            _camera_status = (CameraSatus)_camera.start();
+            if(_camera_status == CameraSatus.CREATED)
+            {
+                Task.Run( () =>
+                {
+                    _camera.thread_task("d:\\test.mp4", 640, 480, 40000);
+                }
+            }
+            
         }
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -47,6 +56,6 @@ namespace AutoCamera
             _camera_status = (CameraSatus)_camera.stop();
         }
 
-        private Camera _camera = null;
+        private Camera _camera = new Camera();
     }
 }

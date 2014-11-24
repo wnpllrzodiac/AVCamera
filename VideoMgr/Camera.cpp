@@ -9,31 +9,11 @@
 namespace VideoMgr
 {
 
-	Camera::Camera( String^ file )
+	Camera::Camera()
 		: _status(CREATED)
-		, _file(file)
 	{
 		ffmpeg_init_all();
-		H264Writer h264;
-		h264.create(file, 640, 480, 40000);
-
-		_video = new cv::VideoCapture();
-		_video->open(0);
-		cv::Mat frame;
-		while (true)
-		{
-			if( _status == PAUSED ) continue;
-			else if( _status == STOPPED ) break;
-			else if( _status == RECORDING )
-			{
-				*_video >> frame;
-				cv::imshow("video", frame);
-				h264 << frame;
-				cv::waitKey(10);
-			}
-		}
-		cv::destroyWindow("video");
-		h264.close();
+		
 	}
 
 	Camera::~Camera()
@@ -41,7 +21,36 @@ namespace VideoMgr
 		delete _video;
 	}
 
-	int Camera::start()
+
+	void Camera::thread_task( String^ file, int width, int height, int bit_rate )
+	{
+		H264Writer h264;
+		h264.create(file, width, height, bit_rate);
+
+		_video = new cv::VideoCapture();
+		_video->open(0);
+		cv::Mat frame;
+		while (true)
+		{
+			if( _status == PAUSED ) 
+			{
+				cv::waitKey(100); continue;
+			}
+			else if( _status == STOPPED ) break;
+			else if( _status == RECORDING )
+			{
+				*_video >> frame;
+				cv::imshow("video", frame);
+				h264 << frame;
+				cv::waitKey(100);
+			}
+		}
+		cv::destroyWindow("video");
+		h264.close();
+	}
+
+
+	void Camera::start()
 	{
 		if(!_video->isOpened()) return 0;
 		if(_status == CREATED)
