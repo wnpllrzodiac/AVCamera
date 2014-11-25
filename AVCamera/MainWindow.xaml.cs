@@ -27,6 +27,7 @@ namespace AutoCamera
         PAUSED    = 2,
         STOPPED   = 4,
     };
+    
     public partial class MainWindow : Window
     {
         public CameraSatus _camera_status = CameraSatus.CREATED;
@@ -34,16 +35,23 @@ namespace AutoCamera
         {
             InitializeComponent();
         }
+        public Boolean StartButtonStatus()
+        {
+            return _camera_status == CameraSatus.CREATED
+                || _camera_status == CameraSatus.PAUSED
+                || _camera_status == CameraSatus.STOPPED;
+        }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if(_camera_status == CameraSatus.CREATED)
+            if(_camera_status == CameraSatus.CREATED
+                || _camera_status == CameraSatus.STOPPED)
             {
                 Task task = new Task(() =>
                 {
                     _camera.thread_task("d:\\test.mp4", 640, 480, 40000);
                 });
-                //task.Start();
+                task.Start();
                 _camera_status = (CameraSatus)_camera.start();
             }
             else if (_camera_status == CameraSatus.PAUSED)

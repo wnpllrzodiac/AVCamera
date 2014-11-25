@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Button Name="StartButton" Content="Start" Margin="162,65,183,177" Click="StartButton_Click" />
+        <Button Name="StartButton" Content="Start" Margin="162,65,183,177" Click="StartButton_Click" IsEnabled="{Binding StartButtonStatus}"/>
         <Button Name="PauseButton" Content="Pause" Margin="41,163,304,79" Click="PauseButton_Click" />
         <Button Name="StopButton" Content="Stop" Margin="274,163,71,79" Click="StopButton_Click" />
     </Grid>

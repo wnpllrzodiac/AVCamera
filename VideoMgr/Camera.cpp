@@ -60,6 +60,10 @@ namespace VideoMgr
 		{
 			_status = RECORDING;
 		}
+		else if(_status == STOPPED)
+		{
+			_status = RECORDING;
+		}
 		return safe_cast<int>(_status);
 	}
 
