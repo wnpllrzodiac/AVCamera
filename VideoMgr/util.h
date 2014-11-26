@@ -9,7 +9,7 @@ extern "C"
 #include <libavcodec\avcodec.h>
 #include <libavformat\avformat.h>
 }
-
+using namespace System;
 namespace VideoMgr
 {
 	//reference: http://msdn.microsoft.com/zh-cn/library/1b4az623.aspx

@@ -28,7 +28,7 @@ namespace AVCamera
         PAUSED    = 2,
         STOPPED   = 4,
     };
-    public class ButtonStatus : IValueConverter
+    /*public class ButtonStatus : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -55,7 +55,7 @@ namespace AVCamera
         {
             throw new NotImplementedException();
         }
-    }
+    }*/
     public partial class MainWindow : Window
     {
         static public CameraSatus _camera_status = CameraSatus.CREATED;

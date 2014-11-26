@@ -3,8 +3,18 @@
 #include "Camera.h"
 #include "util.h"
 #include "H264Writer.h"
+#include "Filter.h"
+
+//#include <chrono>
 #include <opencv2\core\core.hpp>
 #include <opencv2\highgui\highgui.hpp>
+
+using namespace System;
+using namespace System::Threading;
+
+#using < mscorlib.dll >
+#using < System.Windows.Forms.dll >
+
 
 namespace VideoMgr
 {
@@ -13,7 +23,6 @@ namespace VideoMgr
 		: _status(CREATED)
 	{
 		ffmpeg_init_all();
-		
 	}
 
 	Camera::~Camera()
@@ -29,7 +38,12 @@ namespace VideoMgr
 
 		_video = new cv::VideoCapture();
 		_video->open(0);
+
+		Filter filter(width, height);
 		cv::Mat frame;
+		DateTime timer, curr_time;
+		timer = curr_time = DateTime::Now;
+		TimeSpan duration;
 		while (true)
 		{
 			if( _status == PAUSED ) 
@@ -40,9 +54,20 @@ namespace VideoMgr
 			else if( _status == RECORDING )
 			{
 				*_video >> frame;
+				//TODO: Filter
+				filter.show_datetime(frame);
+				
 				cv::imshow("video", frame);
-				h264 << frame;
-				cv::waitKey(100);
+				
+				curr_time = DateTime::Now;
+				duration = curr_time.Subtract(timer);//curr_time - timer;
+
+				String^ ddd = gcnew String("");
+				ddd += duration.Ticks;
+				//System::Windows::Forms::MessageBox::Show(ddd);
+				h264.write(frame, duration.Ticks/10000 > 33 ? abs(33 - duration.Ticks/10000) : 33);
+				timer = curr_time;
+				cv::waitKey(duration.Ticks/10000 >= 33 ? 33 : abs(33 - duration.Ticks/10000));
 			}
 		}
 		cv::destroyWindow("video");
