@@ -12,9 +12,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading.Tasks;
+using System.Globalization;
 using VideoMgr;
 
-namespace AutoCamera
+namespace AVCamera
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -27,19 +28,40 @@ namespace AutoCamera
         PAUSED    = 2,
         STOPPED   = 4,
     };
-    
+    public class ButtonStatus : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string param = (string)parameter;
+            if (param == "Start")
+            {
+                return MainWindow._camera_status == CameraSatus.CREATED
+                || MainWindow._camera_status == CameraSatus.PAUSED
+                || MainWindow._camera_status == CameraSatus.STOPPED;
+            }
+            else if (param == "Pause")
+            {
+                return MainWindow._camera_status == CameraSatus.RECORDING;
+            }
+            else if (param == "Stop")
+            {
+                return MainWindow._camera_status == CameraSatus.RECORDING
+                || MainWindow._camera_status == CameraSatus.PAUSED;
+            }
+            return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public partial class MainWindow : Window
     {
-        public CameraSatus _camera_status = CameraSatus.CREATED;
+        static public CameraSatus _camera_status = CameraSatus.CREATED;
         public MainWindow()
         {
             InitializeComponent();
-        }
-        public Boolean StartButtonStatus()
-        {
-            return _camera_status == CameraSatus.CREATED
-                || _camera_status == CameraSatus.PAUSED
-                || _camera_status == CameraSatus.STOPPED;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)

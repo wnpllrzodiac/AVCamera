@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AutoCamera.Properties
+namespace AVCamera.Properties
 {
 
 
