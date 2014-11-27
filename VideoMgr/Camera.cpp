@@ -43,7 +43,7 @@ namespace VideoMgr
 		cv::Mat frame;
 		DateTime timer, curr_time;
 		timer = curr_time = DateTime::Now;
-		TimeSpan duration;
+		long duration;
 		while (true)
 		{
 			if( _status == PAUSED ) 
@@ -54,20 +54,35 @@ namespace VideoMgr
 			else if( _status == RECORDING )
 			{
 				*_video >> frame;
-				//TODO: Filter
-				filter.show_datetime(frame);
-				
+				// Filter
+				bool isEncode = true;
+				isEncode = isEncode && filter.show_datetime(frame) && filter.give_up_frame(frame, 15);
+
+				//
 				cv::imshow("video", frame);
 				
 				curr_time = DateTime::Now;
-				duration = curr_time.Subtract(timer);//curr_time - timer;
-
-				String^ ddd = gcnew String("");
-				ddd += duration.Ticks;
+				
+				if(isEncode) 
+				{				
+					long dur = curr_time.Subtract(timer).Ticks;
+					duration += dur;
+					h264.write(frame, duration/10000 > 33 ? abs(33 - duration/10000) : 33);
+					cv::waitKey(duration/10000 >= 33 ? 33 : abs(33 - duration/10000));
+					duration = 0;
+				}
+				else
+				{
+					long dur = curr_time.Subtract(timer).Ticks;
+					duration += dur;
+					cv::waitKey( dur/10000 );
+				}
+				//String^ ddd = gcnew String("");
+				//ddd += duration.Ticks;
 				//System::Windows::Forms::MessageBox::Show(ddd);
-				h264.write(frame, duration.Ticks/10000 > 33 ? abs(33 - duration.Ticks/10000) : 33);
+				
 				timer = curr_time;
-				cv::waitKey(duration.Ticks/10000 >= 33 ? 33 : abs(33 - duration.Ticks/10000));
+				
 			}
 		}
 		cv::destroyWindow("video");

@@ -15,7 +15,7 @@ namespace VideoMgr
 		~Filter();
 		// function return value : true: draw , false: jump
 		bool show_datetime(cv::Mat& frame);
-		bool give_up_frame(cv::Mat& frame);
+		bool give_up_frame(cv::Mat& frame, double diffVal);
 		bool blur(cv::Mat& frame);
 
 	private:
