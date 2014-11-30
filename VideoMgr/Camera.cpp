@@ -43,7 +43,7 @@ namespace VideoMgr
 		cv::Mat frame;
 		DateTime timer, curr_time;
 		timer = curr_time = DateTime::Now;
-		long duration;
+		long duration = 0;
 		while (true)
 		{
 			if( _status == PAUSED ) 
@@ -59,12 +59,13 @@ namespace VideoMgr
 				isEncode = isEncode && filter.show_datetime(frame) && filter.give_up_frame(frame, 15);
 
 				//
-				cv::imshow("video", frame);
+				
 				
 				curr_time = DateTime::Now;
 				
 				if(isEncode) 
-				{				
+				{
+					cv::imshow("video", frame);
 					long dur = curr_time.Subtract(timer).Ticks;
 					duration += dur;
 					h264.write(frame, duration/10000 > 33 ? abs(33 - duration/10000) : 33);

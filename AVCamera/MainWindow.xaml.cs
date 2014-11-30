@@ -67,11 +67,21 @@ namespace AVCamera
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             if(_camera_status == CameraSatus.CREATED
-                || _camera_status == CameraSatus.STOPPED)
+                )
             {
                 Task task = new Task(() =>
                 {
-                    _camera.thread_task("d:\\test.mp4", 640, 480, 40000);
+                    _camera.thread_task("d:\\test.mp4", 640, 480, 20000);
+                });
+                task.Start();
+                _camera_status = (CameraSatus)_camera.start();
+            }
+            else if (_camera_status == CameraSatus.STOPPED)
+            {
+                Task task = new Task(() =>
+                {
+                    _camera = new Camera();
+                    _camera.thread_task("d:\\test.mp4", 640, 480, 20000);
                 });
                 task.Start();
                 _camera_status = (CameraSatus)_camera.start();
