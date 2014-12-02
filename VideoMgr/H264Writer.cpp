@@ -67,8 +67,8 @@ namespace VideoMgr
 		video_codec_context->bit_rate       = 1815484;
 		video_codec_context->width          = width;
 		video_codec_context->height         = height;
-		video_codec_context->time_base.num  = 1001;
-		video_codec_context->time_base.den  = 30000;
+		video_codec_context->time_base.num  = 1;
+		video_codec_context->time_base.den  = 25;
 		video_codec_context->gop_size       = 12;
 		video_codec_context->max_b_frames   = 0;
 		if (format_context->oformat->flags & AVFMT_GLOBALHEADER)
@@ -123,7 +123,7 @@ namespace VideoMgr
 
 	bool H264Writer::operator<<( cv::Mat& mat )
 	{
-		write(mat, 33);
+		write(mat, 40);
 
 		return true;
 	}

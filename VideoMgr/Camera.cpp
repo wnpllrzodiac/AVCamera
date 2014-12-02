@@ -62,21 +62,20 @@ namespace VideoMgr
 				
 				
 				curr_time = DateTime::Now;
-				
+				cv::imshow("video", frame);
 				if(isEncode) 
 				{
-					cv::imshow("video", frame);
 					long dur = curr_time.Subtract(timer).Ticks;
 					duration += dur;
-					h264.write(frame, duration/10000 > 33 ? abs(33 - duration/10000) : 33);
-					cv::waitKey(duration/10000 >= 33 ? 33 : abs(33 - duration/10000));
+					h264.write(frame, duration/10000 > 40 ? duration/10000 : 40);
+					cv::waitKey(duration/10000 > 40 ? 1 : abs(40 - duration/10000));
 					duration = 0;
 				}
 				else
 				{
 					long dur = curr_time.Subtract(timer).Ticks;
 					duration += dur;
-					cv::waitKey( dur/10000 );
+					cv::waitKey( 1 );
 				}
 				//String^ ddd = gcnew String("");
 				//ddd += duration.Ticks;
