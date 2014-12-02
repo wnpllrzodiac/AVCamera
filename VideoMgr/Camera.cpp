@@ -34,11 +34,12 @@ namespace VideoMgr
 	}
 
 
-	void Camera::thread_task( String^ file, int width, int height, int bit_rate )
+	bool Camera::thread_task( String^ file, int width, int height, int bit_rate )
 	{
 		H264Writer h264;
-		h264.create(file, width, height, bit_rate);
-		
+		if(!h264.create(file, width, height, bit_rate))
+			return false;
+
 		Filter filter(width, height);
 		cv::Mat frame;
 		DateTime timer, curr_time;
@@ -87,6 +88,7 @@ namespace VideoMgr
 		}
 		cv::destroyWindow("video");
 		h264.close();
+		return true;
 	}
 
 

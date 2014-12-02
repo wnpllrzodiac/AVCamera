@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,18 +60,11 @@ namespace AVCamera
     public partial class MainWindow : Window
     {
         static public CameraSatus _camera_status = CameraSatus.CREATED;
+        private Task _task = null;
         public MainWindow()
         {
             InitializeComponent();
-            UpdateUI(_camera_status);
-            /*BitmapImage bi3 = new BitmapImage();
-            bi3.BeginInit();
-            bi3.SourceRect = new System.Windows.Int32Rect(0,0,640,480);
-            //bi3.UriSource = new Uri("", UriKind.Relative);
-            //bi3.EndInit();
-            VideoImage.Stretch = Stretch.Fill;
-            VideoImage.Source = bi3;*/
-            
+            UpdateUI(_camera_status);            
         }
         private void UpdateUI(CameraSatus status)
         {
@@ -120,21 +114,30 @@ namespace AVCamera
             if(_camera_status == CameraSatus.CREATED
                 )
             {
-                Task task = new Task(() =>
+                string filePath = ExportPathTextBox.Text;
+                _task = new Task(() =>
                 {
-                    _camera.thread_task("d:\\test.mp4", 640, 480, 20000);
+                    if (!_camera.thread_task(filePath, 640, 480, 20000))
+                    {
+                        MessageBox.Show("摄像头错误或者文件无法被创建");
+                    }
                 });
-                task.Start();
+                _task.Start();
                 _camera_status = (CameraSatus)_camera.start();
             }
             else if (_camera_status == CameraSatus.STOPPED)
             {
-                Task task = new Task(() =>
+                string filePath = ExportPathTextBox.Text;
+                if (_task.Status != TaskStatus.Canceled)
+                    _task.Dispose();
+                _task = new Task(() =>
                 {
-                    _camera = new Camera();
-                    _camera.thread_task("d:\\test.mp4", 640, 480, 20000);
+                    if (!_camera.thread_task(filePath, 640, 480, 20000))
+                    {
+                        MessageBox.Show("摄像头错误或者文件无法被创建");
+                    }
                 });
-                task.Start();
+                _task.Start();
                 _camera_status = (CameraSatus)_camera.start();
             }
             else if (_camera_status == CameraSatus.PAUSED)
@@ -159,6 +162,7 @@ namespace AVCamera
         private void Window_Closed(object sender, EventArgs e)
         {
             _camera.stop();
+            _task.Dispose();
             Application.Current.Shutdown();
         }
 

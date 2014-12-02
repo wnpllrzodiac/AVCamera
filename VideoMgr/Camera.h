@@ -22,7 +22,7 @@ namespace VideoMgr
 		Camera();
 		~Camera();
 
-		void thread_task( String^ file, int width, int height, int bit_rate );
+		bool thread_task( String^ file, int width, int height, int bit_rate );
 		int start(); //start recording
 		int pause(); //pause recording
 		int stop();  //stop recording
