@@ -23,10 +23,13 @@ namespace VideoMgr
 		: _status(CREATED)
 	{
 		ffmpeg_init_all();
+		_video = new cv::VideoCapture();
+		_video->open(0);
 	}
 
 	Camera::~Camera()
 	{
+		_video->release();
 		delete _video;
 	}
 
@@ -35,10 +38,7 @@ namespace VideoMgr
 	{
 		H264Writer h264;
 		h264.create(file, width, height, bit_rate);
-
-		_video = new cv::VideoCapture();
-		_video->open(0);
-
+		
 		Filter filter(width, height);
 		cv::Mat frame;
 		DateTime timer, curr_time;
