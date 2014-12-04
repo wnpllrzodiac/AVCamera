@@ -168,6 +168,16 @@ namespace AVCamera
 
         private void ExportPathButton_Click(object sender, RoutedEventArgs e)
         {
+            BitmapImage myBitmapImage =new BitmapImage();
+            myBitmapImage.BeginInit();
+            //取得数据库存储的图片字段，MS-SQL的Image类型
+            //Byte[] mybyte;
+            //myBitmapImage.StreamSource =new MemoryStream(mybyte);
+            myBitmapImage.EndInit();
+            VideoImage.Width = myBitmapImage.Width / 2;
+            VideoImage.Height = myBitmapImage.Height / 2;
+            VideoImage.Source = myBitmapImage;
+
             Microsoft.Win32.SaveFileDialog save = new Microsoft.Win32.SaveFileDialog();
             save.Title = "选择录像保存路径";
             save.Filter = "视频文件（.MP4）|*.MP4|所有文件|*.*";
