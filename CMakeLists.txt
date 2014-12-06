@@ -16,9 +16,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX OR CMAKE_COMPILER_IS_UN
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 endif()
 
-find_package(OpenCV REQUIRED)
-
-include_directories(${OpenCV2_INCLUDE_DIRS})
-include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_subdirectory(videomgr)
+
+add_subdirectory(gui/qt5)
