@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VideoMgr", "VideoMgr\VideoMgr.vcxproj", "{6CBD7A5D-951B-461D-93C4-BE0E57F8946B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AVCamera", "gui\win32\AVCamera.vcxproj", "{42E54E6B-4788-48C4-8012-21C45D32EAE6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32", "gui\win32\win32.vcxproj", "{3DC5D537-61B1-48CC-812B-DF6B2F0A03B7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6CBD7A5D-951B-461D-93C4-BE0E57F8946B} = {6CBD7A5D-951B-461D-93C4-BE0E57F8946B}
 	EndProjectSection
@@ -18,10 +18,10 @@ Global
 		{6CBD7A5D-951B-461D-93C4-BE0E57F8946B}.Debug|Win32.Build.0 = Debug|Win32
 		{6CBD7A5D-951B-461D-93C4-BE0E57F8946B}.Release|Win32.ActiveCfg = Release|Win32
 		{6CBD7A5D-951B-461D-93C4-BE0E57F8946B}.Release|Win32.Build.0 = Release|Win32
-		{42E54E6B-4788-48C4-8012-21C45D32EAE6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{42E54E6B-4788-48C4-8012-21C45D32EAE6}.Debug|Win32.Build.0 = Debug|Win32
-		{42E54E6B-4788-48C4-8012-21C45D32EAE6}.Release|Win32.ActiveCfg = Release|Win32
-		{42E54E6B-4788-48C4-8012-21C45D32EAE6}.Release|Win32.Build.0 = Release|Win32
+		{3DC5D537-61B1-48CC-812B-DF6B2F0A03B7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3DC5D537-61B1-48CC-812B-DF6B2F0A03B7}.Debug|Win32.Build.0 = Debug|Win32
+		{3DC5D537-61B1-48CC-812B-DF6B2F0A03B7}.Release|Win32.ActiveCfg = Release|Win32
+		{3DC5D537-61B1-48CC-812B-DF6B2F0A03B7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,7 +3,7 @@
 //
 
 #include "stdafx.h"
-#include "AVCamera.h"
+#include "win32.h"
 #include "AVCameraDlg.h"
 #include "afxdialogex.h"
 
@@ -20,6 +20,7 @@ UINT __cdecl CameraThreadProc( LPVOID pParam )
 	pObject->thread_task();
 	return 0;
 }
+
 
 CAVCameraDlg::CAVCameraDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CAVCameraDlg::IDD, pParent)
@@ -96,6 +97,7 @@ HCURSOR CAVCameraDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
+
 
 void CAVCameraDlg::UpdateStatus(VideoMgr::CameraSatus status)
 {

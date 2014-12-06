@@ -1,9 +1,9 @@
 
-// AVCamera.cpp : 定义应用程序的类行为。
+// win32.cpp : 定义应用程序的类行为。
 //
 
 #include "stdafx.h"
-#include "AVCamera.h"
+#include "win32.h"
 #include "AVCameraDlg.h"
 
 #ifdef _DEBUG

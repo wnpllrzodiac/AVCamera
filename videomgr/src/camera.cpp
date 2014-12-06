@@ -1,8 +1,8 @@
 
-#include "camera.h"
-#include "h264writer.h"
-#include "filter.h"
-#include "util.h"
+#include "camera.hpp"
+#include "h264writer.hpp"
+#include "filter.hpp"
+#include "util.hpp"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>

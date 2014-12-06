@@ -1,11 +1,9 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
 
-#include "h264writer.h"
-#include "filter.h"
+#include "h264writer.hpp"
+#include "filter.hpp"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>

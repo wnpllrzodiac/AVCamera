@@ -16,15 +16,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\AVCamera.rc2">
+    <None Include="res\win32.rc2">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="res\AVCamera.ico">
+    <None Include="res\win32.ico">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AVCamera.h">
+    <ClInclude Include="win32.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="AVCameraDlg.h">
@@ -41,7 +41,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AVCamera.cpp">
+    <ClCompile Include="win32.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AVCameraDlg.cpp">
@@ -52,7 +52,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="AVCamera.rc">
+    <ResourceCompile Include="win32.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>

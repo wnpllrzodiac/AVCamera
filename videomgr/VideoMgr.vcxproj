@@ -44,7 +44,7 @@
     <LibraryPath>$(SolutionDir)third_party\lib\ffmpeg;$(SolutionDir)third_party\lib\opencv;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)third_party\include\ffmpeg;$(SolutionDir)third_party\include\opencv;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
+    <IncludePath>$(SolutionDir)third_party\include\ffmpeg;$(SolutionDir)third_party\include\opencv;$(ProjectDir)include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(SolutionDir)third_party\lib\ffmpeg;$(SolutionDir)third_party\lib\opencv;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
@@ -83,10 +83,10 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include/camera.h" />
-    <ClInclude Include="include/filter.h" />
-    <ClInclude Include="include/h264writer.h" />
-    <ClInclude Include="include/util.h" />
+    <ClInclude Include="include\camera.hpp" />
+    <ClInclude Include="include\filter.hpp" />
+    <ClInclude Include="include\h264writer.hpp" />
+    <ClInclude Include="include\util.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src/camera.cpp" />

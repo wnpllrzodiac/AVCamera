@@ -18,16 +18,16 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include/camera.h">
+    <ClInclude Include="include\camera.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include/filter.h">
+    <ClInclude Include="include\filter.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include/h264writer.h">
+    <ClInclude Include="include\h264writer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include/util.h">
+    <ClInclude Include="include\util.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

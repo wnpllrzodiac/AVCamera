@@ -3,8 +3,7 @@
 //
 
 #pragma once
-#include "Camera.h"
-
+#include "camera.hpp"
 
 // CAVCameraDlg 对话框
 class CAVCameraDlg : public CDialogEx
@@ -14,7 +13,7 @@ public:
 	CAVCameraDlg(CWnd* pParent = NULL);	// 标准构造函数
 
 // 对话框数据
-	enum { IDD = IDD_AVCAMERA_DIALOG };
+	enum { IDD = IDD_WIN32_DIALOG };
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
@@ -33,11 +32,10 @@ protected:
 	afx_msg void OnBnClickedButtonPause();
 	afx_msg void OnBnClickedButtonStop();
 	DECLARE_MESSAGE_MAP()
-	
+
 protected:
 	void UpdateStatus(VideoMgr::CameraSatus status);
 
 private:
 	std::shared_ptr<VideoMgr::Camera> _camera;
-
 };
