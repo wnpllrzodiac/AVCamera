@@ -34,7 +34,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="startButton">
         <property name="text">
          <string>开始</string>
         </property>
@@ -54,7 +54,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="pauseButton">
         <property name="text">
          <string>暂停</string>
         </property>
@@ -74,7 +74,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="stopButton">
         <property name="text">
          <string>停止</string>
         </property>
