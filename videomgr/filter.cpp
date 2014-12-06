@@ -1,11 +1,12 @@
 
-#include "Stdafx.h"
-#include "Filter.h"
+#include "stdafx.h"
+#include "filter.h"
 
-#include <opencv2\core\core.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #include <time.h>
+#include <stdio.h>
 
 
 namespace VideoMgr

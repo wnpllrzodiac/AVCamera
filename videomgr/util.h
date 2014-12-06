@@ -3,7 +3,7 @@
 #include <windows.h>
 #else
 #include<sys/time.h>
-#include<syswait.h>
+#include <unistd.h>
 #endif
 
 unsigned long get_now_time()

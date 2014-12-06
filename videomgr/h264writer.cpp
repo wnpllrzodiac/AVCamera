@@ -1,20 +1,20 @@
 // 这是主 DLL 文件。
 
 #include "stdafx.h"
-#include "H264Writer.h"
+#include "h264writer.h"
 
-#include <opencv2\opencv.hpp>
-#include <opencv2\core\core.hpp>
-#include <opencv2\highgui\highgui.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 extern "C"
 {
-#include <libavutil\opt.h>
-#include <libavcodec\avcodec.h>
-#include <libavutil\channel_layout.h>
-#include <libavutil\imgutils.h>
-#include <libavutil\mathematics.h>
-#include <libavutil\samplefmt.h>
+#include <libavutil/opt.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/channel_layout.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/samplefmt.h>
 };
 
 
@@ -56,7 +56,7 @@ namespace VideoMgr
 			return false;
 		}
 		format_context->oformat = output_format;
-		strcpy_s(format_context->filename, 1024, file.c_str());
+		strncpy(format_context->filename, file.c_str(), 1024);
 
 		// create video stream and video encoder
 		AVCodec* video_codec = avcodec_find_encoder(output_format->video_codec);

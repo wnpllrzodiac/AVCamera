@@ -1,12 +1,12 @@
 
 #include "stdafx.h"
-#include "Camera.h"
-#include "H264Writer.h"
-#include "Filter.h"
+#include "camera.h"
+#include "h264writer.h"
+#include "filter.h"
 #include "util.h"
 
-#include <opencv2\core\core.hpp>
-#include <opencv2\highgui\highgui.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 
 namespace VideoMgr
@@ -36,7 +36,7 @@ namespace VideoMgr
 		unsigned long duration = 0;
 		while (true)
 		{
-			if( _status == CREATED) 
+			if( _status == CREATED)
 			{
 				timer = curr_time = get_now_time();
 				custom_sleep(100); continue;
@@ -71,7 +71,7 @@ namespace VideoMgr
 				curr_time = get_now_time();
 				cv::imshow("video", frame);
 				unsigned long dur = curr_time - timer;
-				if(isEncode) 
+				if(isEncode)
 				{
 					duration += dur;
 					_h264->write(frame, duration > 40 ? duration : 40);
@@ -83,7 +83,7 @@ namespace VideoMgr
 					duration += dur;
 					cv::waitKey( 1 );
 				}
-			
+
 				timer = curr_time;
 
 			}
@@ -96,9 +96,9 @@ namespace VideoMgr
 				}
 				break;
 			}
-			
+
 		}
-		
+
 		return true;
 	}
 
