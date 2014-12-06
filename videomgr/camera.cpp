@@ -1,5 +1,4 @@
 
-#include "stdafx.h"
 #include "camera.h"
 #include "h264writer.h"
 #include "filter.h"

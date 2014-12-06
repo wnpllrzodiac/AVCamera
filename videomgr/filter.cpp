@@ -1,5 +1,4 @@
 
-#include "stdafx.h"
 #include "filter.h"
 
 #include <opencv2/core/core.hpp>

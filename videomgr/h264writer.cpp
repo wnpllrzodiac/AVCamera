@@ -1,6 +1,5 @@
 // 这是主 DLL 文件。
 
-#include "stdafx.h"
 #include "h264writer.h"
 
 #include <opencv2/opencv.hpp>

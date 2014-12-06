@@ -1,7 +1,9 @@
 
 #pragma once
 
-#include "stdafx.h"
+#include <memory>
+#include <string>
+
 #include "h264writer.h"
 #include "filter.h"
 

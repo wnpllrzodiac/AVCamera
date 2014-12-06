@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "stdafx.h"
-
 #include <opencv2/core/core.hpp>
 
 namespace VideoMgr

@@ -1,8 +1,6 @@
 // VideoMgr.h
 
 #pragma once
-#include "stdafx.h"
-
 #include <opencv2/core/core.hpp>
 
 extern "C"
