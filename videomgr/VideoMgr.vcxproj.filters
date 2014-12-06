@@ -18,30 +18,27 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="include/camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="include/filter.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Filter.h">
+    <ClInclude Include="include/h264writer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="H264Writer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="util.h">
+    <ClInclude Include="include/util.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="src/camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Filter.cpp">
+    <ClCompile Include="src/filter.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="H264Writer.cpp">
+    <ClCompile Include="src/h264writer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
