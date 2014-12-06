@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "..\VideoMgr\Camera.h"
+#include "Camera.h"
 
 
 // CAVCameraDlg ¶Ô»°¿ò

@@ -3,10 +3,10 @@
 #include "Camera.h"
 #include "H264Writer.h"
 #include "Filter.h"
+#include "util.h"
 
 #include <opencv2\core\core.hpp>
 #include <opencv2\highgui\highgui.hpp>
-#include <WINDOWS.h>
 
 
 namespace VideoMgr
@@ -32,18 +32,18 @@ namespace VideoMgr
 	{
 		cv::Mat frame;
 		unsigned long timer, curr_time;
-		timer = curr_time = GetTickCount();
+		timer = curr_time = get_now_time();
 		unsigned long duration = 0;
 		while (true)
 		{
 			if( _status == CREATED) 
 			{
-				timer = curr_time = GetTickCount();
-				Sleep(100); continue;
+				timer = curr_time = get_now_time();
+				custom_sleep(100); continue;
 			}
 			else if(_status == PAUSED)
 			{
-				curr_time = GetTickCount();
+				curr_time = get_now_time();
 				cv::waitKey(100); continue;
 			}
 			else if(_status == STOPPED)
@@ -57,8 +57,8 @@ namespace VideoMgr
 					_filter.reset();
 					_last_status = _status;
 				}
-				timer = curr_time = GetTickCount();
-				Sleep(100); continue;
+				timer = curr_time = get_now_time();
+				custom_sleep(100); continue;
 			}
 			else if(_status == RECORDING)
 			{
@@ -68,7 +68,7 @@ namespace VideoMgr
 				isEncode = isEncode && _filter->show_datetime(frame) && _filter->give_up_frame(frame, 15);
 				//
 
-				curr_time = GetTickCount();
+				curr_time = get_now_time();
 				cv::imshow("video", frame);
 				unsigned long dur = curr_time - timer;
 				if(isEncode) 

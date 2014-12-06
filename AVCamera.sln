@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VideoMgr", "VideoMgr\VideoMgr.vcxproj", "{6CBD7A5D-951B-461D-93C4-BE0E57F8946B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AVCamera", "AVCamera\AVCamera.vcxproj", "{42E54E6B-4788-48C4-8012-21C45D32EAE6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AVCamera", "gui\win32\AVCamera.vcxproj", "{42E54E6B-4788-48C4-8012-21C45D32EAE6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6CBD7A5D-951B-461D-93C4-BE0E57F8946B} = {6CBD7A5D-951B-461D-93C4-BE0E57F8946B}
 	EndProjectSection

@@ -5,34 +5,31 @@
 
 #pragma once
 
-#include "targetver.h"
-
-#define WIN32_LEAN_AND_MEAN             //  从 Windows 头文件中排除极少使用的信息
-
 #include <string>
 #include <memory>
 
-//opencv library
-#ifdef _DEBUG
-#pragma comment (lib, "opencv_core249d.lib")
-#pragma comment (lib, "opencv_imgproc249d.lib")
-#pragma comment (lib, "opencv_highgui249d.lib")
-#pragma comment (lib, "opencv_objdetect249d.lib")
-//#pragma comment (lib, "opencv_video249d.lib")
+#ifdef _MSC_VER
+	//opencv library
+	#ifdef _DEBUG
+	#pragma comment (lib, "opencv_core249d.lib")
+	#pragma comment (lib, "opencv_imgproc249d.lib")
+	#pragma comment (lib, "opencv_highgui249d.lib")
+	#pragma comment (lib, "opencv_objdetect249d.lib")
+	//#pragma comment (lib, "opencv_video249d.lib")
+	#endif
+
+	#ifdef NDEBUG
+	#pragma comment (lib, "opencv_core249.lib")
+	#pragma comment (lib, "opencv_imgproc249.lib")
+	#pragma comment (lib, "opencv_highgui249.lib")
+	#pragma comment (lib, "opencv_objdetect249.lib")
+	//#pragma comment (lib, "opencv_video249.lib")
+	#endif
+
+	//ffmpeg library
+	#pragma comment (lib, "avcodec.lib")
+	#pragma comment (lib, "avformat.lib")
+	#pragma comment (lib, "avutil.lib")
+	#pragma comment (lib, "swscale.lib")
+	//#pragma comment (lib, "swresample.lib")
 #endif
-
-#ifdef NDEBUG
-#pragma comment (lib, "opencv_core249.lib")
-#pragma comment (lib, "opencv_imgproc249.lib")
-#pragma comment (lib, "opencv_highgui249.lib")
-#pragma comment (lib, "opencv_objdetect249.lib")
-//#pragma comment (lib, "opencv_video249.lib")
-#endif
-
-//ffmpeg library
-#pragma comment (lib, "avcodec.lib")
-#pragma comment (lib, "avformat.lib")
-#pragma comment (lib, "avutil.lib")
-#pragma comment (lib, "swscale.lib")
-//#pragma comment (lib, "swresample.lib")
-
