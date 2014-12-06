@@ -1,4 +1,5 @@
 #pragma once
+#include <thread>
 #include "ui_mainwindow.h"
 #include "camera.h"
 
@@ -8,6 +9,7 @@ class MainWindow : public QMainWindow
 
 public:
 	explicit MainWindow(QWidget *parent = 0);
+	~MainWindow();
 
 protected:
 	void changeEvent(QEvent *e);
@@ -15,8 +17,19 @@ protected:
 private Q_SLOTS:
 	void on_startButton_clicked();
 
+	void on_stopButton_clicked();
+
+	void on_pauseButton_clicked();
+
+	void onvideo_updated();
+
+Q_SIGNALS:
+	void video_updated();
+
 private:
 	Ui::MainWindow ui;
 
 	VideoMgr::Camera _camera;
+
+	std::thread m_camera_thread;
 };

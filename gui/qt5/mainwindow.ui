@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QWidget" name="video_widget" native="true">
+     <widget class="QFrame" name="video_frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -55,6 +55,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="pauseButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>暂停</string>
         </property>
@@ -75,6 +78,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="stopButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>停止</string>
         </property>
@@ -97,5 +103,134 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>startButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>startButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>36</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>startButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>pauseButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>347</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>startButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>stopButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>658</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stopButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>startButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>658</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>36</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stopButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>stopButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>658</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>658</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stopButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>pauseButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>658</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>347</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pauseButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>startButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>36</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pauseButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>pauseButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>347</x>
+     <y>488</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

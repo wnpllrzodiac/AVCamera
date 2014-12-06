@@ -11,7 +11,8 @@ int main(int argc, char* argv[])
 
 	app.setWindowIcon(QIcon(":/icon/AVCamera.ico"));
 
-	(new MainWindow)->show();
+	MainWindow w;
+	w.show();
 
 	return app.exec();
 }
