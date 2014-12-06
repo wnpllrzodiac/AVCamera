@@ -178,7 +178,7 @@ namespace VideoMgr
 			}
 			if(av_interleaved_write_frame(_context, &output_packet) < 0)
 			{
-				printf("Fail to write the video frame #%d.\n", _video_pts);
+				printf("Fail to write the video frame #%ld.\n", _video_pts);
 				av_free_packet(&output_packet);
 				return false;
 			}
