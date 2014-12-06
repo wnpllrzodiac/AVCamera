@@ -1,19 +1,12 @@
 
 #include "stdafx.h"
 #include "Camera.h"
-#include "util.h"
 #include "H264Writer.h"
 #include "Filter.h"
 
-//#include <chrono>
 #include <opencv2\core\core.hpp>
 #include <opencv2\highgui\highgui.hpp>
-
-using namespace System;
-using namespace System::Threading;
-
-#using < mscorlib.dll >
-#using < System.Windows.Forms.dll >
+#include <WINDOWS.h>
 
 
 namespace VideoMgr
@@ -22,78 +15,105 @@ namespace VideoMgr
 	Camera::Camera()
 		: _status(CREATED)
 	{
-		ffmpeg_init_all();
-		_video = new cv::VideoCapture();
-		_video->open(0);
+		av_register_all();
+
+		_video.open(0);
 	}
 
 	Camera::~Camera()
 	{
-		_video->release();
-		delete _video;
+		_video.release();
+		_h264.reset();
+		_filter.reset();
 	}
 
 
-	bool Camera::thread_task( String^ file, int width, int height, int bit_rate )
+	bool Camera::thread_task()
 	{
-		H264Writer h264;
-		if(!h264.create(file, width, height, bit_rate))
-			return false;
-
-		Filter filter(width, height);
 		cv::Mat frame;
-		DateTime timer, curr_time;
-		timer = curr_time = DateTime::Now;
-		long duration = 0;
+		unsigned long timer, curr_time;
+		timer = curr_time = GetTickCount();
+		unsigned long duration = 0;
 		while (true)
 		{
-			if( _status == PAUSED ) 
+			if( _status == CREATED) 
 			{
+				timer = curr_time = GetTickCount();
+				Sleep(100); continue;
+			}
+			else if(_status == PAUSED)
+			{
+				curr_time = GetTickCount();
 				cv::waitKey(100); continue;
 			}
-			else if( _status == STOPPED ) break;
-			else if( _status == RECORDING )
+			else if(_status == STOPPED)
 			{
-				*_video >> frame;
+				if(_last_status == RECORDING
+					|| _last_status == PAUSED)
+				{
+					cv::destroyWindow("video");
+					_h264->close();
+					_h264.reset();
+					_filter.reset();
+					_last_status = _status;
+				}
+				timer = curr_time = GetTickCount();
+				Sleep(100); continue;
+			}
+			else if(_status == RECORDING)
+			{
+				_video >> frame;
 				// Filter
 				bool isEncode = true;
-				isEncode = isEncode && filter.show_datetime(frame) && filter.give_up_frame(frame, 15);
-
+				isEncode = isEncode && _filter->show_datetime(frame) && _filter->give_up_frame(frame, 15);
 				//
-				
-				
-				curr_time = DateTime::Now;
+
+				curr_time = GetTickCount();
 				cv::imshow("video", frame);
+				unsigned long dur = curr_time - timer;
 				if(isEncode) 
 				{
-					long dur = curr_time.Subtract(timer).Ticks;
 					duration += dur;
-					h264.write(frame, duration/10000 > 40 ? duration/10000 : 40);
-					cv::waitKey(duration/10000 > 40 ? 1 : abs(40 - duration/10000));
+					_h264->write(frame, duration > 40 ? duration : 40);
+					cv::waitKey(duration > 40 ? 1 : (40 - duration));
 					duration = 0;
 				}
 				else
 				{
-					long dur = curr_time.Subtract(timer).Ticks;
 					duration += dur;
 					cv::waitKey( 1 );
 				}
-				//String^ ddd = gcnew String("");
-				//ddd += duration.Ticks;
-				//System::Windows::Forms::MessageBox::Show(ddd);
-				
+			
 				timer = curr_time;
-				
+
 			}
+			else if(_status == EXITED)
+			{
+				if(_last_status == STOPPED
+					|| _last_status == CREATED)
+				{
+					cv::destroyWindow("video");
+				}
+				break;
+			}
+			
 		}
-		cv::destroyWindow("video");
-		h264.close();
+		
 		return true;
 	}
 
 
-	int Camera::start()
+	int Camera::start( std::string file, int width, int height, int bit_rate )
 	{
+		//create h264writer
+		_h264.reset(new H264Writer());
+		if(!_h264->create(file, width, height, bit_rate))
+			return static_cast<int>(CREATED);
+
+		//create filter
+		_filter.reset(new Filter(width, height));
+
+		_last_status = _status;
 		if(_status == CREATED)
 		{
 			_status = RECORDING;
@@ -106,22 +126,24 @@ namespace VideoMgr
 		{
 			_status = RECORDING;
 		}
-		return safe_cast<int>(_status);
+		return static_cast<int>(_status);
 	}
 
 	int Camera::pause()
 	{
-		if(!_video->isOpened()) return 0;
+		if(!_video.isOpened()) return 0;
+		_last_status = _status;
 		if(_status == RECORDING)
 		{
 			_status = PAUSED;
 		}
-		return safe_cast<int>(_status);
+		return static_cast<int>(_status);
 	}
 
 	int Camera::stop()
 	{
-		if(!_video->isOpened()) return 0;
+		if(!_video.isOpened()) return 0;
+		_last_status = _status;
 		if(_status == CREATED)
 		{
 			_status = STOPPED;
@@ -134,7 +156,13 @@ namespace VideoMgr
 		{
 			_status = STOPPED;
 		}
-		return safe_cast<int>(_status);
+		return static_cast<int>(_status);
 	}
-
+	int Camera::exit()
+	{
+		_last_status = _status;
+		_status = EXITED;
+		if(_h264 != nullptr) _h264->close();
+		return static_cast<int>(_status);
+	}
 }

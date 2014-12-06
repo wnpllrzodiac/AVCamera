@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 #include "H264Writer.h"
-#include "util.h"
 
 #include <opencv2\opencv.hpp>
 #include <opencv2\core\core.hpp>
@@ -22,14 +21,28 @@ extern "C"
 namespace VideoMgr
 {
 	H264Writer::H264Writer()
+		: _context(nullptr)
+		, _rgb_scaler(nullptr)
+		, _output_video_frame(nullptr)
+		, _vcodec(nullptr)
+		, _vstream(nullptr)
+		, _format(nullptr)
 	{
 	}
 
-	bool H264Writer::create( String^ file, int width, int height, int bit_rate )
+	H264Writer::~H264Writer()
 	{
-		std::string filename;
-		String2string(file, filename);
-		AVOutputFormat* output_format = av_guess_format(nullptr, filename.c_str(), nullptr);
+		if(_context != nullptr) avformat_close_input(&_context);
+		if(_rgb_scaler != nullptr) sws_freeContext(_rgb_scaler);
+		if(_output_video_frame != nullptr) av_frame_free(&_output_video_frame);
+		if(_vcodec != nullptr) av_freep(_vcodec);
+		if(_vstream != nullptr) av_freep(_vstream);
+		if(_format != nullptr) av_free(_format);
+	}
+
+	bool H264Writer::create( std::string file, int width, int height, int bit_rate )
+	{
+		AVOutputFormat* output_format = av_guess_format(nullptr, file.c_str(), nullptr);
 		if(output_format == nullptr)
 		{
 			printf("could not deduce output format from outfile extension\n");
@@ -43,7 +56,7 @@ namespace VideoMgr
 			return false;
 		}
 		format_context->oformat = output_format;
-		strcpy_s(format_context->filename, 1024, filename.c_str());
+		strcpy_s(format_context->filename, 1024, file.c_str());
 
 		// create video stream and video encoder
 		AVCodec* video_codec = avcodec_find_encoder(output_format->video_codec);
@@ -64,7 +77,7 @@ namespace VideoMgr
 		video_codec_context->codec_id       = AV_CODEC_ID_H264;
 		video_codec_context->pix_fmt        = AV_PIX_FMT_YUV420P;
 		video_codec_context->codec_type     = AVMEDIA_TYPE_VIDEO;
-		video_codec_context->bit_rate       = 1815484;
+		video_codec_context->bit_rate       = bit_rate;
 		video_codec_context->width          = width;
 		video_codec_context->height         = height;
 		video_codec_context->time_base.num  = 1;
@@ -88,9 +101,9 @@ namespace VideoMgr
 		// open output file to write
 		if ((format_context->flags & AVFMT_NOFILE) == 0)
 		{
-			if(avio_open(&format_context->pb, filename.c_str(), AVIO_FLAG_READ_WRITE) < 0)
+			if(avio_open(&format_context->pb, file.c_str(), AVIO_FLAG_READ_WRITE) < 0)
 			{
-				printf("can't open the output file : %s.", filename.c_str());
+				printf("can't open the output file : %s.", file.c_str());
 				return false;
 			}
 		}
@@ -183,16 +196,6 @@ namespace VideoMgr
 	void H264Writer::close()
 	{
 		write_trailer();
-
-		//interior_ptr<AVFormatContext*> p = &(_context);
-		pin_ptr<AVFormatContext*> AVFormatContextPtr =  (&_context);
-		avformat_close_input(AVFormatContextPtr);
-		sws_freeContext(_rgb_scaler);
-		pin_ptr<AVFrame*> AVFramePtr =  (&_output_video_frame);
-		av_frame_free(AVFramePtr);
-		_format  = nullptr;
-		_vstream = nullptr;
-		_vcodec  = nullptr;
 	}
 
 	bool H264Writer::write_header()
@@ -216,6 +219,5 @@ namespace VideoMgr
 		}
 		return true;
 	}
-	
 
 }

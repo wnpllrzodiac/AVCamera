@@ -12,17 +12,17 @@ extern "C"
 #include <libswscale\swscale.h>
 }
 
-using namespace System;
 
 namespace VideoMgr {
 
-	public ref class H264Writer
+	class H264Writer
 	{
 	public:
 		H264Writer();
-		bool create( String^ file, int width, int height, int bit_rate );
-		inline bool operator << ( cv::Mat& mat );
-		inline bool write( cv::Mat& mat, int64 duration );
+		~H264Writer();
+		bool create( std::string file, int width, int height, int bit_rate );
+		bool operator << ( cv::Mat& mat );
+		bool write( cv::Mat& mat, int64 duration );
 		void close();
 
 	private:
@@ -30,7 +30,7 @@ namespace VideoMgr {
 		bool write_trailer();
 
 	private:
-		System::String^  _filename;
+		std::string      _filename;
 		int              _width;
 		int              _height;
 		int              _bit_rate;

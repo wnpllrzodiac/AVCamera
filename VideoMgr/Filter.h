@@ -10,7 +10,6 @@ namespace VideoMgr
 	class Filter
 	{
 	public:
-		Filter(){};
 		Filter(int width, int height);
 		~Filter();
 		// function return value : true: draw , false: jump

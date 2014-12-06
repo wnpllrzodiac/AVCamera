@@ -1,16 +1,12 @@
 
 #include "Stdafx.h"
 #include "Filter.h"
-#include "util.h"
 
 #include <opencv2\core\core.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
 
-using namespace System;
-using namespace System::Threading;
+#include <time.h>
 
-#using < mscorlib.dll >
-#using < System.Windows.Forms.dll >
 
 namespace VideoMgr
 {
@@ -28,10 +24,17 @@ namespace VideoMgr
 
 	bool Filter::show_datetime( cv::Mat& frame )
 	{
-		String^ datetimestr =  DateTime::Now.ToString("yyyy-MM-dd HH:mm:ss");
-		std::string datetimestr2;
-		String2string(datetimestr, datetimestr2);
-		cv::putText(frame, datetimestr2, cv::Point(2,_height-2), cv::FONT_HERSHEY_PLAIN, 1.5, cv::Scalar(0,255,0));
+		time_t tt = time(NULL);
+		tm* t= localtime(&tt);
+		char timestr[30];
+		sprintf(timestr, "%d-%02d-%02d %02d:%02d:%02d",
+			t->tm_year + 1900,
+			t->tm_mon + 1,
+			t->tm_mday,
+			t->tm_hour,
+			t->tm_min,
+			t->tm_sec);
+		cv::putText(frame, std::string(timestr), cv::Point(2,_height-2), cv::FONT_HERSHEY_PLAIN, 1.5, cv::Scalar(0,255,0));
 		return true;
 	}
 
@@ -56,7 +59,7 @@ namespace VideoMgr
 		{
 			return false;
 		}
-		
+
 	}
 
 	bool Filter::blur( cv::Mat& frame )

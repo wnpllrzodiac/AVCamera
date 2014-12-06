@@ -1,11 +1,13 @@
 
 #pragma once
-using namespace System;
 
 #include "stdafx.h"
+#include "H264Writer.h"
+#include "Filter.h"
 
 #include <opencv2\core\core.hpp>
 #include <opencv2\highgui\highgui.hpp>
+
 
 namespace VideoMgr
 {
@@ -14,23 +16,28 @@ namespace VideoMgr
 		CREATED   = 0,
 		RECORDING = 1,
 		PAUSED    = 2,
-		STOPPED      = 4,
+		STOPPED   = 4,
+		EXITED    = 8,
 	};
-	public ref class Camera
+	class Camera
 	{
 	public:
 		Camera();
 		~Camera();
 
-		bool thread_task( String^ file, int width, int height, int bit_rate );
-		int start(); //start recording
+		bool thread_task();
+		int start(std::string file, int width, int height, int bit_rate); //start recording
 		int pause(); //pause recording
 		int stop();  //stop recording
+		int exit();
 
 	private:
-		cv::VideoCapture* _video;
-		CameraSatus       _status;
-		String^           _file;
+		cv::VideoCapture                   _video;
+		std::shared_ptr<H264Writer>        _h264;
+		std::shared_ptr<Filter>            _filter;
+		CameraSatus                        _status;
+		CameraSatus                        _last_status;
+		std::string                        _file;
 	};
 
 }
