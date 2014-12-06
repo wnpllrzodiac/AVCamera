@@ -21,10 +21,10 @@ private Q_SLOTS:
 
 	void on_pauseButton_clicked();
 
-	void onvideo_updated();
+	void onvideo_updated(QSharedPointer<QImage>);
 
 Q_SIGNALS:
-	void video_updated();
+	void video_updated(QSharedPointer<QImage>);
 
 private:
 	Ui::MainWindow ui;

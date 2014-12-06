@@ -1,4 +1,10 @@
+
+#include <QMetaType>
 #include "mainwindow.hpp"
+
+Q_DECLARE_METATYPE(QImage);
+Q_DECLARE_METATYPE(QSharedPointer<QImage>);
+
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -48,7 +54,7 @@ void MainWindow::on_pauseButton_clicked()
 	_camera.pause();
 }
 
-void MainWindow::onvideo_updated()
+void MainWindow::onvideo_updated(QSharedPointer<QImage>)
 {
 
 }
