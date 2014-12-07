@@ -8,6 +8,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <boost/signals2/signal.hpp>
+#include <boost/thread/thread.hpp> 
+
 
 namespace VideoMgr
 {
@@ -24,13 +27,17 @@ namespace VideoMgr
 	public:
 		Camera();
 		~Camera();
-
-		bool thread_task();
+		
 		int start(std::string file, int width, int height, int bit_rate); //start recording
 		int pause(); //pause recording
 		int stop();  //stop recording
 		int exit();
-
+		void get_curr_frame(cv::Mat& frame);
+		cv::Mat                           last_frame;
+	private:
+		void thread_task();	//do not use
+	public:
+		boost::signals2::signal<void ()>   refresh_sign;
 	private:
 		cv::VideoCapture                   _video;
 		std::shared_ptr<H264Writer>        _h264;

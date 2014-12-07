@@ -7,14 +7,21 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <boost/signals2/signal.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
 
 namespace VideoMgr
 {
-
 	Camera::Camera()
 		: _status(CREATED)
 	{
 		av_register_all();
+
+		//begin thread
+		boost::thread camera_thread(boost::bind(&Camera::thread_task, this));
+		camera_thread.detach();
+		//camera_thread.start_thread();
 
 		_video.open(0);
 	}
@@ -27,7 +34,7 @@ namespace VideoMgr
 	}
 
 
-	bool Camera::thread_task()
+	void Camera::thread_task()
 	{
 		cv::Mat frame;
 		unsigned long timer, curr_time;
@@ -83,6 +90,9 @@ namespace VideoMgr
 					cv::waitKey( 1 );
 				}
 
+				//send sign
+				refresh_sign();
+
 				timer = curr_time;
 
 			}
@@ -97,8 +107,6 @@ namespace VideoMgr
 			}
 
 		}
-
-		return true;
 	}
 
 
@@ -111,6 +119,9 @@ namespace VideoMgr
 
 		//create filter
 		_filter.reset(new Filter(width, height));
+
+		//create last frame mat
+		last_frame.create(height, width, CV_8UC3);
 
 		_last_status = _status;
 		if(_status == CREATED)
@@ -143,6 +154,7 @@ namespace VideoMgr
 	{
 		if(!_video.isOpened()) return 0;
 		_last_status = _status;
+		last_frame.release();
 		if(_status == CREATED)
 		{
 			_status = STOPPED;
@@ -164,4 +176,10 @@ namespace VideoMgr
 		if(_h264 != nullptr) _h264->close();
 		return static_cast<int>(_status);
 	}
+
+	void Camera::get_curr_frame( cv::Mat& frame )
+	{
+		frame = last_frame;//it is not copy memory
+	}
+
 }

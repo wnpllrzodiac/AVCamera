@@ -14,14 +14,6 @@
 
 // CAVCameraDlg 对话框
 
-UINT __cdecl CameraThreadProc( LPVOID pParam )
-{
-	VideoMgr::Camera* pObject = (VideoMgr::Camera*)pParam;
-	pObject->thread_task();
-	return 0;
-}
-
-
 CAVCameraDlg::CAVCameraDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CAVCameraDlg::IDD, pParent)
 {
@@ -56,7 +48,6 @@ BOOL CAVCameraDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	_camera.reset(new VideoMgr::Camera());
-	AfxBeginThread(CameraThreadProc, _camera.get());
 	UpdateStatus(VideoMgr::CREATED);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
