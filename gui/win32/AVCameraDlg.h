@@ -39,5 +39,6 @@ protected:
 
 private:
 	std::shared_ptr<VideoMgr::Camera> _camera;
-	CImage img;
+	CImage _img;
+	CDC* _dc;
 };

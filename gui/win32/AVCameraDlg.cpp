@@ -52,6 +52,8 @@ BOOL CAVCameraDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	_dc = GetDlgItem(IDC_VIDEO_PLAYBACK)->GetDC();
+
 	_camera.reset(new VideoMgr::Camera());
 	_camera->refresh_sign.connect(boost::bind(&CAVCameraDlg::UpdateVideoFrame, this));
 	UpdateStatus(VideoMgr::CREATED);
@@ -123,16 +125,16 @@ void CAVCameraDlg::OnBnClickedButtonStart()
 {
 	UpdateStatus(VideoMgr::RECORDING);
 	int width = 640, height = 480, channel = 3, bit_rate = 1815484;
-	if(img.IsNull())
+	if(_img.IsNull())
 	{
-		img.Create(width, height, channel * 8);
+		_img.Create(width, height, channel * 8);
 	}
 	else
 	{
-		if(img.GetWidth() != width || img.GetHeight() != height || img.GetBPP() == channel)
+		if(_img.GetWidth() != width || _img.GetHeight() != height || _img.GetBPP() == channel)
 		{
-			img.Destroy();
-			img.Create(width, height, channel * 8);
+			_img.Destroy();
+			_img.Create(width, height, channel * 8);
 		}
 	}
 	_camera->start("d:\\test.mp4", 640, 480, 1815484);
@@ -154,12 +156,12 @@ void CAVCameraDlg::UpdateVideoFrame()
 {
 	cv::Mat mat;
 	_camera->get_curr_frame(mat);
-	if(mat.data == nullptr || img.IsNull()) return;
+	if(mat.data == nullptr || _img.IsNull()) return;
 	
 	//convert Mat to CImage
 	uchar* ps;
-	uchar* pimg = (uchar*)img.GetBits();
-	int step = img.GetPitch();
+	uchar* pimg = (uchar*)_img.GetBits();
+	int step = _img.GetPitch();
 	for (int i = 0; i < mat.rows; ++i)
 	{
 		ps = (mat.ptr<uchar>(i));
@@ -174,18 +176,19 @@ void CAVCameraDlg::UpdateVideoFrame()
 			}
 		}
 	}
-	CDC* dc = GetDlgItem(IDC_VIDEO_PLAYBACK)->GetDC();
 	RECT pic_rect,dst_rect;
 	GetDlgItem(IDC_VIDEO_PLAYBACK)->GetWindowRect(&pic_rect);
 	dst_rect.left = dst_rect.top = 0;
 	dst_rect.right = pic_rect.right - pic_rect.left;
 	dst_rect.bottom = pic_rect.bottom - pic_rect.top;
-	img.Draw(dc->GetSafeHdc(), dst_rect, Gdiplus::InterpolationModeBilinear);
+	_img.Draw(_dc->GetSafeHdc(), dst_rect, Gdiplus::InterpolationModeBilinear);
 
 }
 
 void CAVCameraDlg::OnClose()
 {
 	_camera->exit();
+	Sleep(500);
+	ReleaseDC(_dc);
 	CDialogEx::OnClose();
 }
