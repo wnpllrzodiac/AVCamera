@@ -36,7 +36,7 @@ namespace VideoMgr
 		if(_output_video_frame != nullptr) av_frame_free(&_output_video_frame);
 		//if(_vcodec != nullptr) av_freep(_vcodec);
 		//if(_vstream != nullptr) av_freep(_vstream);
-		if(_format != nullptr) av_free(_format);
+		//if(_format != nullptr) av_free(_format);
 	}
 
 	bool H264Writer::create( std::string file, int width, int height, int bit_rate )
