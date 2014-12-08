@@ -21,13 +21,12 @@ private Q_SLOTS:
 
 	void on_pauseButton_clicked();
 
-	void onvideo_updated(QSharedPointer<QImage>);
+	void onvideo_updated();
 
 Q_SIGNALS:
-	void video_updated(QSharedPointer<QImage>);
+	void video_updated();
 
 private:
 	Ui::MainWindow ui;
-
 	VideoMgr::Camera _camera;
 };
