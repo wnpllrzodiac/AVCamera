@@ -54,8 +54,7 @@ BOOL CAVCameraDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	_dc = GetDlgItem(IDC_VIDEO_PLAYBACK)->GetDC();
 
-	_camera.reset(new VideoMgr::Camera());
-	_camera->refresh_sign.connect(boost::bind(&CAVCameraDlg::UpdateVideoFrame, this));
+	_camera.refresh_sign.connect(boost::bind(&CAVCameraDlg::UpdateVideoFrame, this));
 	UpdateStatus(VideoMgr::CREATED);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -137,25 +136,25 @@ void CAVCameraDlg::OnBnClickedButtonStart()
 			_img.Create(width, height, channel * 8);
 		}
 	}
-	_camera->start("d:\\test.mp4", 640, 480, 1815484);
+	_camera.start("d:\\test.mp4", 640, 480, 1815484);
 }
 
 void CAVCameraDlg::OnBnClickedButtonPause()
 {
 	UpdateStatus(VideoMgr::PAUSED);
-	_camera->pause();
+	_camera.pause();
 }
 
 void CAVCameraDlg::OnBnClickedButtonStop()
 {
 	UpdateStatus(VideoMgr::STOPPED);
-	_camera->stop();
+	_camera.stop();
 }
 
 void CAVCameraDlg::UpdateVideoFrame()
 {
 	cv::Mat mat;
-	_camera->get_curr_frame(mat);
+	_camera.get_curr_frame(mat);
 	if(mat.data == nullptr || _img.IsNull()) return;
 	
 	//convert Mat to CImage
@@ -187,8 +186,7 @@ void CAVCameraDlg::UpdateVideoFrame()
 
 void CAVCameraDlg::OnClose()
 {
-	_camera->exit();
-	Sleep(500);
+	_camera.exit();
 	ReleaseDC(_dc);
 	CDialogEx::OnClose();
 }

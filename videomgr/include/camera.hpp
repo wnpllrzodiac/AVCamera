@@ -38,11 +38,12 @@ namespace VideoMgr
 		void thread_task();	//do not use
 	public:
 		boost::signals2::signal<void ()>   refresh_sign;
+		CameraSatus                        _status;
 	private:
+		boost::thread                      _camera_thread;
 		cv::VideoCapture                   _video;
 		std::shared_ptr<H264Writer>        _h264;
 		std::shared_ptr<Filter>            _filter;
-		CameraSatus                        _status;
 		CameraSatus                        _last_status;
 		std::string                        _file;
 	};

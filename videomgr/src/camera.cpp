@@ -15,19 +15,17 @@ namespace VideoMgr
 {
 	Camera::Camera()
 		: _status(CREATED)
+		, _camera_thread(boost::bind(&Camera::thread_task, this))
 	{
 		av_register_all();
-
-		//begin thread
-		boost::thread camera_thread(boost::bind(&Camera::thread_task, this));
-		camera_thread.detach();
-		//camera_thread.start_thread();
 
 		_video.open(0);
 	}
 
 	Camera::~Camera()
 	{
+		_camera_thread.interrupt();
+		_camera_thread.join();
 		_video.release();
 		_h264.reset();
 		_filter.reset();
@@ -45,26 +43,25 @@ namespace VideoMgr
 			if( _status == CREATED)
 			{
 				timer = curr_time = get_now_time();
-				boost::this_thread::sleep(boost::posix_time::microseconds(100)); continue;
+				boost::this_thread::sleep(boost::posix_time::microseconds(800)); continue;
 			}
 			else if(_status == PAUSED)
 			{
 				curr_time = get_now_time();
-				boost::this_thread::sleep(boost::posix_time::microseconds(100)); continue;
+				boost::this_thread::sleep(boost::posix_time::microseconds(800)); continue;
 			}
 			else if(_status == STOPPED)
 			{
 				if(_last_status == RECORDING
 					|| _last_status == PAUSED)
 				{
-					cv::destroyWindow("video");
 					_h264->close();
 					_h264.reset();
 					_filter.reset();
 					_last_status = _status;
 				}
 				timer = curr_time = get_now_time();
-				boost::this_thread::sleep(boost::posix_time::microseconds(100)); continue;
+				boost::this_thread::sleep(boost::posix_time::microseconds(800)); continue;
 			}
 			else if(_status == RECORDING)
 			{
@@ -81,14 +78,14 @@ namespace VideoMgr
 				{
 					duration += dur;
 					_h264->write(frame, duration > 40 ? duration : 40);
-					boost::this_thread::sleep(boost::posix_time::microseconds(duration > 40 ? 1 : (40 - duration)));
+					if(duration < 40) boost::this_thread::sleep(boost::posix_time::microseconds(40 - duration));
 					//cv::waitKey(duration > 40 ? 1 : (40 - duration));
 					duration = 0;
 				}
 				else
 				{
 					duration += dur;
-					boost::this_thread::sleep(boost::posix_time::microseconds(10));
+					//boost::this_thread::sleep(boost::posix_time::microseconds(10));
 				}
 
 				//send sign
@@ -172,9 +169,9 @@ namespace VideoMgr
 	}
 	int Camera::exit()
 	{
-		_last_status = _status;
+		stop();
+		boost::this_thread::sleep(boost::posix_time::microseconds(800));
 		_status = EXITED;
-		if(_h264 != nullptr) _h264->close();
 		return static_cast<int>(_status);
 	}
 

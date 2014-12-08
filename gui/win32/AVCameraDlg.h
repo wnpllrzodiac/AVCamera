@@ -38,7 +38,7 @@ protected:
 	void UpdateVideoFrame();
 
 private:
-	std::shared_ptr<VideoMgr::Camera> _camera;
+	VideoMgr::Camera _camera;
 	CImage _img;
 	CDC* _dc;
 };
