@@ -14,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui.setupUi(this);
 
-	ui.video_frame->setAttribute(Qt::WA_PaintOnScreen);
-	ui.video_frame->setAttribute(Qt::WA_StaticContents);
+//	ui.video_frame->setAttribute(Qt::WA_PaintOnScreen);
+//	ui.video_frame->setAttribute(Qt::WA_StaticContents);
 
 	connect(this, &MainWindow::video_updated, this, &MainWindow::onvideo_updated, Qt::QueuedConnection);
 

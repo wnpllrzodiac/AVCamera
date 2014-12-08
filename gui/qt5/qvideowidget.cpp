@@ -23,7 +23,4 @@ void QVideoWidget::paintEvent(QPaintEvent* e)
 	dc.drawImage(r, m_video_image);
 
 	e->accept();
-
-
-	e->accept();
 }
