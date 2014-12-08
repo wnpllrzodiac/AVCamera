@@ -11,11 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui.setupUi(this);
 
-	m_camera_thread = std::thread([this]()
-	{
-		_camera.thread_task();
-	});
-
 	connect(this, &MainWindow::video_updated, this, &MainWindow::onvideo_updated, Qt::QueuedConnection);
 }
 
@@ -23,7 +18,6 @@ MainWindow::~MainWindow()
 {
 	_camera.stop();
 	_camera.exit();
-	m_camera_thread.join();
 }
 
 void MainWindow::changeEvent(QEvent *e)

@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icon">
-        <file>AVCamera.ico</file>
+        <file>win32.ico</file>
     </qresource>
 </RCC>

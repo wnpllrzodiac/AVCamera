@@ -1,7 +1,7 @@
 #pragma once
 #include <thread>
 #include "ui_mainwindow.h"
-#include "camera.h"
+#include "camera.hpp"
 
 class MainWindow : public QMainWindow
 {
@@ -30,6 +30,4 @@ private:
 	Ui::MainWindow ui;
 
 	VideoMgr::Camera _camera;
-
-	std::thread m_camera_thread;
 };
