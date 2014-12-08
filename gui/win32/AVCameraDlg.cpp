@@ -16,11 +16,36 @@
 #define new DEBUG_NEW
 #endif
 
+// wchar_t to string
+void Wchar_tToString(std::string& szDst, wchar_t *wchar)
+{
+	wchar_t * wText = wchar;
+	DWORD dwNum = WideCharToMultiByte(CP_OEMCP,NULL,wText,-1,NULL,0,NULL,FALSE);// WideCharToMultiByte的运用
+	char *psText; // psText为char*的临时数组，作为赋值给std::string的中间变量
+	psText = new char[dwNum];
+	WideCharToMultiByte (CP_OEMCP,NULL,wText,-1,psText,dwNum,NULL,FALSE);// WideCharToMultiByte的再次运用
+	szDst = psText;// std::string赋值
+	delete []psText;// psText的清除
+}
+
+// string to wstring
+void StringToWstring(std::wstring& szDst, std::string str)
+{
+	std::string temp = str;
+	int len=MultiByteToWideChar(CP_ACP, 0, (LPCSTR)temp.c_str(), -1, NULL,0); 
+	wchar_t * wszUtf8 = new wchar_t[len+1]; 
+	memset(wszUtf8, 0, len * 2 + 2); 
+	MultiByteToWideChar(CP_ACP, 0, (LPCSTR)temp.c_str(), -1, (LPWSTR)wszUtf8, len);
+	szDst = wszUtf8;
+	std::wstring r = wszUtf8;
+	delete[] wszUtf8;
+}
 
 // CAVCameraDlg 对话框
 
 CAVCameraDlg::CAVCameraDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CAVCameraDlg::IDD, pParent)
+	, _file_path(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -28,6 +53,7 @@ CAVCameraDlg::CAVCameraDlg(CWnd* pParent /*=NULL*/)
 void CAVCameraDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_FILE_PATH, _file_path);
 }
 
 BEGIN_MESSAGE_MAP(CAVCameraDlg, CDialogEx)
@@ -37,6 +63,7 @@ BEGIN_MESSAGE_MAP(CAVCameraDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_PAUSE, &CAVCameraDlg::OnBnClickedButtonPause)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CAVCameraDlg::OnBnClickedButtonStop)
 	ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_BUTTON_FILE_BROWSER, &CAVCameraDlg::OnBnClickedButtonFileBrowser)
 END_MESSAGE_MAP()
 
 
@@ -122,6 +149,8 @@ void CAVCameraDlg::UpdateStatus(VideoMgr::CameraSatus status)
 
 void CAVCameraDlg::OnBnClickedButtonStart()
 {
+	UpdateData(TRUE);
+	if(_file_path.GetLength()<=0) AfxMessageBox(L"请设置视频保存位置");
 	UpdateStatus(VideoMgr::RECORDING);
 	int width = 640, height = 480, channel = 3, bit_rate = 1815484;
 	if(_img.IsNull())
@@ -136,7 +165,9 @@ void CAVCameraDlg::OnBnClickedButtonStart()
 			_img.Create(width, height, channel * 8);
 		}
 	}
-	_camera.start("d:\\test.mp4", 640, 480, 1815484);
+	std::string tempstr;
+	Wchar_tToString(tempstr, _file_path.GetBuffer());
+	_camera.start(tempstr, 640, 480, 1815484);
 }
 
 void CAVCameraDlg::OnBnClickedButtonPause()
@@ -189,4 +220,19 @@ void CAVCameraDlg::OnClose()
 	_camera.exit();
 	ReleaseDC(_dc);
 	CDialogEx::OnClose();
+}
+
+
+void CAVCameraDlg::OnBnClickedButtonFileBrowser()
+{
+	UpdateData(TRUE);
+	TCHAR szFilters[]= _T("MP4 Files (*.mp4)|*.mp4|All Files (*.*)|*.*||");
+	CFileDialog fileDlg(FALSE, _T("mp4"), _file_path//_T("*.mp4")
+		, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilters
+		, this, 512);
+	if(fileDlg.DoModal() == IDOK)
+	{
+		_file_path = fileDlg.GetPathName();
+	}
+	UpdateData(FALSE);
 }

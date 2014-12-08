@@ -31,6 +31,7 @@ protected:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonPause();
 	afx_msg void OnBnClickedButtonStop();
+	afx_msg void OnBnClickedButtonFileBrowser();
 	DECLARE_MESSAGE_MAP()
 
 protected:
@@ -41,4 +42,5 @@ private:
 	VideoMgr::Camera _camera;
 	CImage _img;
 	CDC* _dc;
+	CString _file_path;
 };
