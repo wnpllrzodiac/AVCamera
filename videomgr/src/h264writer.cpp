@@ -34,8 +34,8 @@ namespace VideoMgr
 		if(_context != nullptr) avformat_close_input(&_context);
 		if(_rgb_scaler != nullptr) sws_freeContext(_rgb_scaler);
 		if(_output_video_frame != nullptr) av_frame_free(&_output_video_frame);
-		if(_vcodec != nullptr) av_freep(_vcodec);
-		if(_vstream != nullptr) av_freep(_vstream);
+		//if(_vcodec != nullptr) av_freep(_vcodec);
+		//if(_vstream != nullptr) av_freep(_vstream);
 		if(_format != nullptr) av_free(_format);
 	}
 

@@ -45,12 +45,12 @@ namespace VideoMgr
 			if( _status == CREATED)
 			{
 				timer = curr_time = get_now_time();
-				custom_sleep(100); continue;
+				boost::this_thread::sleep(boost::posix_time::microseconds(100)); continue;
 			}
 			else if(_status == PAUSED)
 			{
 				curr_time = get_now_time();
-				cv::waitKey(100); continue;
+				boost::this_thread::sleep(boost::posix_time::microseconds(100)); continue;
 			}
 			else if(_status == STOPPED)
 			{
@@ -64,7 +64,7 @@ namespace VideoMgr
 					_last_status = _status;
 				}
 				timer = curr_time = get_now_time();
-				custom_sleep(100); continue;
+				boost::this_thread::sleep(boost::posix_time::microseconds(100)); continue;
 			}
 			else if(_status == RECORDING)
 			{
@@ -75,33 +75,34 @@ namespace VideoMgr
 				//
 
 				curr_time = get_now_time();
-				cv::imshow("video", frame);
+				//cv::imshow("video", frame); for test
 				unsigned long dur = curr_time - timer;
 				if(isEncode)
 				{
 					duration += dur;
 					_h264->write(frame, duration > 40 ? duration : 40);
-					cv::waitKey(duration > 40 ? 1 : (40 - duration));
+					boost::this_thread::sleep(boost::posix_time::microseconds(duration > 40 ? 1 : (40 - duration)));
+					//cv::waitKey(duration > 40 ? 1 : (40 - duration));
 					duration = 0;
 				}
 				else
 				{
 					duration += dur;
-					cv::waitKey( 1 );
+					boost::this_thread::sleep(boost::posix_time::microseconds(10));
 				}
 
 				//send sign
 				refresh_sign();
 
 				timer = curr_time;
-
+				frame.copyTo(last_frame);//backup to last_frame everyone in recording
 			}
 			else if(_status == EXITED)
 			{
 				if(_last_status == STOPPED
 					|| _last_status == CREATED)
 				{
-					cv::destroyWindow("video");
+					;//cv::destroyWindow("video");//for test
 				}
 				break;
 			}

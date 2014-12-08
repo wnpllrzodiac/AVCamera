@@ -35,7 +35,9 @@ protected:
 
 protected:
 	void UpdateStatus(VideoMgr::CameraSatus status);
+	void UpdateVideoFrame();
 
 private:
 	std::shared_ptr<VideoMgr::Camera> _camera;
+	CImage img;
 };

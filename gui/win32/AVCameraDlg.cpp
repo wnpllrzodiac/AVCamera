@@ -7,6 +7,11 @@
 #include "AVCameraDlg.h"
 #include "afxdialogex.h"
 
+#include <opencv2/core/core.hpp>
+
+#include <boost/signals2/signal.hpp>
+#include <boost/bind.hpp>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -48,6 +53,7 @@ BOOL CAVCameraDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	_camera.reset(new VideoMgr::Camera());
+	_camera->refresh_sign.connect(boost::bind(&CAVCameraDlg::UpdateVideoFrame, this));
 	UpdateStatus(VideoMgr::CREATED);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -116,6 +122,19 @@ void CAVCameraDlg::UpdateStatus(VideoMgr::CameraSatus status)
 void CAVCameraDlg::OnBnClickedButtonStart()
 {
 	UpdateStatus(VideoMgr::RECORDING);
+	int width = 640, height = 480, channel = 3, bit_rate = 1815484;
+	if(img.IsNull())
+	{
+		img.Create(width, height, channel * 8);
+	}
+	else
+	{
+		if(img.GetWidth() != width || img.GetHeight() != height || img.GetBPP() == channel)
+		{
+			img.Destroy();
+			img.Create(width, height, channel * 8);
+		}
+	}
 	_camera->start("d:\\test.mp4", 640, 480, 1815484);
 }
 
@@ -129,6 +148,40 @@ void CAVCameraDlg::OnBnClickedButtonStop()
 {
 	UpdateStatus(VideoMgr::STOPPED);
 	_camera->stop();
+}
+
+void CAVCameraDlg::UpdateVideoFrame()
+{
+	cv::Mat mat;
+	_camera->get_curr_frame(mat);
+	if(mat.data == nullptr) return;
+	
+	//convert Mat to CImage
+	uchar* ps;
+	uchar* pimg = (uchar*)img.GetBits();
+	int step = img.GetPitch();
+	for (int i = 0; i < mat.rows; ++i)
+	{
+		ps = (mat.ptr<uchar>(i));
+		for ( int j = 0; j < mat.cols; ++j )
+		{
+			if ( mat.channels() == 3 ) //3 channels
+			{
+				for (int k = 0 ; k < 3; ++k )
+				{
+					*(pimg + i*step + j*3 + k ) = ps[j*3 + k];
+				}
+			}
+		}
+	}
+	CDC* dc = GetDlgItem(IDC_VIDEO_PLAYBACK)->GetDC();
+	RECT pic_rect,dst_rect;
+	GetDlgItem(IDC_VIDEO_PLAYBACK)->GetWindowRect(&pic_rect);
+	dst_rect.left = dst_rect.top = 0;
+	dst_rect.right = pic_rect.right - pic_rect.left;
+	dst_rect.bottom = pic_rect.bottom - pic_rect.top;
+	img.Draw(dc->GetSafeHdc(), dst_rect);
+
 }
 
 void CAVCameraDlg::OnClose()
