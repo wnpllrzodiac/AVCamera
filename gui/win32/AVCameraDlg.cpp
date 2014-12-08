@@ -150,7 +150,7 @@ void CAVCameraDlg::UpdateStatus(VideoMgr::CameraSatus status)
 void CAVCameraDlg::OnBnClickedButtonStart()
 {
 	UpdateData(TRUE);
-	if(_file_path.GetLength()<=0) AfxMessageBox(L"请设置视频保存位置");
+	if(_file_path.GetLength()<=0) {AfxMessageBox(L"请设置视频保存位置");return;}
 	UpdateStatus(VideoMgr::RECORDING);
 	int width = 640, height = 480, channel = 3, bit_rate = 1815484;
 	if(_img.IsNull())
