@@ -154,7 +154,7 @@ void CAVCameraDlg::UpdateVideoFrame()
 {
 	cv::Mat mat;
 	_camera->get_curr_frame(mat);
-	if(mat.data == nullptr) return;
+	if(mat.data == nullptr || img.IsNull()) return;
 	
 	//convert Mat to CImage
 	uchar* ps;
@@ -180,7 +180,7 @@ void CAVCameraDlg::UpdateVideoFrame()
 	dst_rect.left = dst_rect.top = 0;
 	dst_rect.right = pic_rect.right - pic_rect.left;
 	dst_rect.bottom = pic_rect.bottom - pic_rect.top;
-	img.Draw(dc->GetSafeHdc(), dst_rect);
+	img.Draw(dc->GetSafeHdc(), dst_rect, Gdiplus::InterpolationModeBilinear);
 
 }
 
