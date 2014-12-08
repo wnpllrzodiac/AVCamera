@@ -15,5 +15,5 @@ qt5_add_resources(RC_SRCS avcamera.qrc)
 
 set(SRCS ${SRCS} ${UI_SRCS} ${RC_SRCS})
 
-add_executable(avcamera WIN32 MACOSX_BUNDLE ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/../win32/AVCamera.rc)
+add_executable(avcamera WIN32 MACOSX_BUNDLE ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/../win32/win32.rc)
 target_link_libraries(avcamera Qt5::Widgets videomgr)
