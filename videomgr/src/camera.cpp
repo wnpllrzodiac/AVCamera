@@ -68,7 +68,8 @@ namespace VideoMgr
 				_video >> frame;
 				// Filter
 				bool isEncode = true;
-				isEncode = isEncode && _filter->show_datetime(frame) && _filter->give_up_frame(frame, 5);
+				isEncode = isEncode && _filter->give_up_frame(frame, 5);
+				isEncode = isEncode && _filter->show_datetime(frame);
 				//
 
 				curr_time = get_now_time();

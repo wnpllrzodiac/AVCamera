@@ -49,10 +49,10 @@ namespace VideoMgr
 		percent *= 100;
 		char str[20];
 		sprintf(str, "Diff: %.2f%%", percent);
-		cv::putText(frame, std::string(str), cv::Point(2,_height-50), cv::FONT_HERSHEY_PLAIN, 1.5, cv::Scalar(0,0,255));
 		if(percent > diffVal)
 		{
 			frame.copyTo(last_frame);
+			cv::putText(frame, std::string(str), cv::Point(2,_height-50), cv::FONT_HERSHEY_PLAIN, 1.5, cv::Scalar(0,0,255));
 			return true;
 		}
 		else
