@@ -11,6 +11,7 @@
 
 #include <boost/signals2/signal.hpp>
 #include <boost/bind.hpp>
+#include <winuser.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -77,6 +78,12 @@ BOOL CAVCameraDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
+
+
+	CButton* pButton = (CButton*)GetDlgItem(IDC_BUTTON_START);
+	ASSERT(pButton);
+	pButton->ModifyStyle(0, BS_BITMAP);
+	pButton->SetBitmap(LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_PNG_START)));
 
 	// TODO: 在此添加额外的初始化代码
 	_dc = GetDlgItem(IDC_VIDEO_PLAYBACK)->GetDC();

@@ -106,6 +106,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="res\player_pause.png" />
+    <None Include="res\player_record.png" />
+    <None Include="res\player_stop.png" />
     <None Include="res\win32.ico" />
     <None Include="res\win32.rc2" />
   </ItemGroup>
